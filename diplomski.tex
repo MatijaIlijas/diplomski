@@ -4,7 +4,7 @@
 \begin{document}
 
 % TODO: Navedite broj rada.
-\thesisnumber{000}
+\thesisnumber{1115}
 
 % TODO: Navedite naslov rada.
 \title{DUBOKE KONVOLUCIJSKE NEURONSKE MREŽE ZA RASPOZNAVANJE ZNAKOVA}
@@ -28,9 +28,24 @@ Uvod rada. Nakon uvoda dolaze poglavlja u kojima se obrađuje tema.
 
 \chapter{Umjetne neuronske mreže}
 
+Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava sve probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Zbog svoje robusnosti, najčešća primjena neuronske mreže je u raspoznavanju uzoraka, obradi slike i govora, nelinearnom upravljanju itd.
+
+Mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povezuje prethodna dva. Čvorišta, tzv. neuroni, skrivenog sloja povezani su težinskim vezama s ulaznim i izlaznim neuronima. Dvije su faze rada umjetnih neuronskih mreža: učenje (treniranje) i obrada podataka (eksploatacija). Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom treniranja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
+
+
 \chapter{Duboke konvolucijske neuronske mreže}
 
 \chapter{Implementacija}
+
+U sklopu ovog rada razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža. Prilikom razvijanja takvog sustava bilo je važno zadovoljiti dva glavna uvjeta: brzo učenje novih arhitektura na velikoj količini podataka te detaljna analiza rada naučenih mreža. Iz tog razloga sustav je podijeljen na dva podsustava razvijena sa zasebnim alatima. Podsustav zadužen za učenje implementiran je u razvojnoj cijelini Torch, skupu alata koji omogućuje paralelno izvođenje procesa učenja na grafičkoj kartici. Podsustav koji provodi analizu rada naučenih mreža implementiran je u jeziku C++ korištenjem OpenCV biblioteke.
+
+\section{Podsustav za učenje}
+
+\subsection{Torch razvojna cijelina}
+
+\subsection{Definiranje arhitekture}
+
+\section{Podsustav za testiranje}
 
 \chapter{Rezultati}
 
@@ -41,7 +56,7 @@ Zaključak.
 \bibliographystyle{fer}
 
 \begin{sazetak}
-Sažetak na hrvatskom jeziku.
+
 
 \kljucnerijeci{Ključne riječi, odvojene zarezima.}
 \end{sazetak}
