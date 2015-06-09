@@ -3,18 +3,16 @@
 
 \begin{document}
 
-% TODO: Navedite broj rada.
 \thesisnumber{1115}
 
-% TODO: Navedite naslov rada.
 \title{DUBOKE KONVOLUCIJSKE NEURONSKE MREŽE ZA RASPOZNAVANJE ZNAKOVA}
 
-% TODO: Navedite vaše ime i prezime.
 \author{Matija Ilijaš}
 
 \maketitle
 
 % Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
+\izvornik
 
 % Dodavanje zahvale ili prazne stranice. Ako ne želite dodati zahvalu, naredbu ostavite radi prazne stranice.
 \zahvala{}
@@ -31,6 +29,10 @@ Uvod rada. Nakon uvoda dolaze poglavlja u kojima se obrađuje tema.
 Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava sve probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Zbog svoje robusnosti, najčešća primjena neuronske mreže je u raspoznavanju uzoraka, obradi slike i govora, nelinearnom upravljanju itd.
 
 Mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povezuje prethodna dva. Čvorišta, tzv. neuroni, skrivenog sloja povezani su težinskim vezama s ulaznim i izlaznim neuronima. Dvije su faze rada umjetnih neuronskih mreža: učenje (treniranje) i obrada podataka (eksploatacija). Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom treniranja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
+
+
+\chapter{Duboko učenje}
+
 
 
 \chapter{Duboke konvolucijske neuronske mreže}
@@ -56,7 +58,7 @@ Sama implementacija Torcha podijeljena je na dva dijela. Sve računske operacije
 \subsection{Definiranje arhitekture}
 	
 Neuronska mreža je u Torch alatu definirana kao model koji se sastoji od sekvencijalno povezanih slojeva koji vrše različite računske operacije.
-Tako bi na primjer jedna standarna neuronska mreža s jednim skrivenim slojem bila definirana kao sekvencijalni niz prikazan na Slici ???. 
+Tako bi na primjer standarna neuronska mreža s jednim skrivenim slojem bila definirana kao sekvencijalni niz prikazan na Slici ???. 
 
 \begin{figure}[ht!]
 \centering
@@ -64,7 +66,7 @@ Tako bi na primjer jedna standarna neuronska mreža s jednim skrivenim slojem bi
 \caption{}
 \end{figure}
 
-Primjer jedne duboke konvolucijske mreže definirane kao Torch model prikazan je na Slici ???.
+Primjer duboke konvolucijske mreže definirane kao Torch model prikazan je na Slici ???.
 
 \begin{figure}[ht!]
 \centering
@@ -76,7 +78,10 @@ Primjer jedne duboke konvolucijske mreže definirane kao Torch model prikazan je
 
 
 
+
 \section{Sustav za testiranje}
+
+
 
 \chapter{Rezultati}
 
@@ -92,7 +97,6 @@ Zaključak.
 \kljucnerijeci{Ključne riječi, odvojene zarezima.}
 \end{sazetak}
 
-% TODO: Navedite naslov na engleskom jeziku.
 \engtitle{Deep convolutional neural networks for character recognition}
 \begin{abstract}
 Abstract.
