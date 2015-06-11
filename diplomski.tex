@@ -43,14 +43,15 @@ Proces razvoja kvalitetnih značajki podrazumijeva promatranje svojstva ulaznih 
 
 Kako bi se koristile sve informacije iz podataka, potrebne su metode koje određuju diskriminantne značajke izravno iz skupa podataka. Među popularnijim metodama tog tipa su metoda linearne diskriminantne analize (LDA) te metoda glavnih komponenata (PCA). Linearna diskriminantna analiza pronalazi prikaz podataka koji maksimalno diskriminira podatke različitih klasa, dok metoda glavnih komponenata prikazuje podatke kao linearnu kombinaciju linearno nekoreliranih varijabli koje imaju najveću varijancu.
 
-Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz više procesirajućih slojeva koji tvore hijerarhiju gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja je  inspirirana je vizualnim korteksom te se zasniva na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije razina apstrakcije. Cilj dubokog učenja je razviti što kvalitetniji hijerarhijski prikaz objekata klasifikacije uz pomoć velike količine podataka.
+Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz više procesirajućih slojeva koji tvore hijerarhiju gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja inspirirana je vizualnim korteksom te se zasniva na učenju cijele hijerarhije, odnosno više razina apstrakcije. 
 
 \section{Učenje dubokih mreža}
 
 Kao što je ranije spomenuto ideja dubokog učenja je naučiti hijerarhiju značajki iz podataka. S obzirom da to zahtijeva nekoliko dodatnih slojeva mreže, kompleksnost dubokih modela značajno je veća od standarnih. Poznato je da količina potrebnih podataka za kvalitetno učenje modela raste proporcionalno sa brojem njegovih slobodnih parametara. Stoga je za učenje dubokih mreža potrebno za red veličine više podataka nego kod učenja standarnih klasifikatora. Nedovoljna količina podataka za učenje, te nedovoljno jaka računala za učenje tako velikih modela, razlog su zašto duboko učenje nije zaživjelo 1980-ih godina kada je prvi put predstavljeno kao ideja. Dolazak specijaliziranih razvojnih alata za brzo učenje mreža na grafičkim karticama, kao i sve veća količina dostupnih podataka za učenje, omogućili su da duboko učenje u zadnjih nekoliko godina pokaže svoj potencijal na raznim problemima strojnog učenja.
-Jedna od velikih prednosti dubokog učenja je što uz metode nadziranog učenja ima razvijene i metode nenadziranog učenja. Sve veća količina podataka postaje dostupna za učenje, no velikim dijelom radi se o neoznačenim podatcima. Kako bi se i ti podatci iskoristili potrebne su metode nenadziranog učenja.
 
-Kao što je ranije spomenuto, duboki modeli predstavljaju hijerarhiju značajki podataka, a jednu razinu apstrakcije moguće je postići metodom glavnih komponenata (PCA). Stoga se u teoriji postavlja pitanje da li uzastopnim primjenjivanjem metode glavnih komponenata možemo dobiti traženu hijerarhiju. Odgovor na to pitanje je da ne možemo, a razlog tome je linearnost te metode. Uzastopnom linearnom transformacijom konačno se uvijek dobiva linearna transformacija, što onemogućuje stvaranje željene hijerarhije. Iz tog razloga razvijene su dvije nove metode sa dodanom nelinearnošću, autoenkoderi i ograničeni Boltzmann strojevi. U sklopu ovog rada opisati će se autoenkoderi, jednostavnija i intuitivnija metoda od dvije navedene.
+Jedna od velikih prednosti dubokog učenja je što uz metode nadziranog učenja ima razvijene i metode nenadziranog učenja. U ovom radu koristi se isključivo nadzirano učenje zbog dostupnosti velike količine označenih podataka. U nastavku ovog poglavlja opisana je metoda nenadziranog učenja, a metoda nadziranog učenja opisana je u idućem poglavlju kao uvod u duboke konvolucijske mreže.
+
+Sve veća količina podataka postaje dostupna za učenje, no velikim dijelom radi se o neoznačenim podatcima. Kako bi se i ti podatci iskoristili potrebne su metode nenadziranog učenja. Kao što je ranije spomenuto, duboki modeli predstavljaju hijerarhiju značajki podataka, a jednu razinu apstrakcije moguće je postići metodom glavnih komponenata (PCA). Stoga se u teoriji postavlja pitanje da li uzastopnim primjenjivanjem metode glavnih komponenata možemo dobiti traženu hijerarhiju. Odgovor na to pitanje je da ne možemo, a razlog tome je linearnost te metode. Uzastopnom linearnom transformacijom konačno se uvijek dobiva linearna transformacija, što onemogućuje stvaranje željene hijerarhije. Iz tog razloga razvijene su dvije nove metode sa dodanom nelinearnošću, autoenkoderi i ograničeni Boltzmann strojevi. U sklopu ovog rada opisati će se autoenkoderi, jednostavnija i intuitivnija metoda od dvije navedene.
 
 Autoenkoder je jednostavna troslojna neuronska mreža kod koje su izlazni neuroni izravno povezani sa ulaznim neuronima. 
 
@@ -70,10 +71,50 @@ S obzirom da autoenkoder radi nelinearnu transformaciju nad ulaznim podatcima, m
 Ovako dobivena mreža naučena je isključivo na neoznačenim podatcima te predstavlja hijerarhiju značajki podataka bez mogućnosti klasifikacije. Konačni klasifikator dobiva se dodavanjem jedne manje mreže koja na ulaz prima značajke zadnjeg autoenkodera a na izlaz vraća klase zadanog problema. Tako povezana mreža autoenkodera i mreža za klasifikaciju zatim se uče na označenim podatcima kao jedna velika mreža.
 
 
-
-
-
 \chapter{Duboke konvolucijske neuronske mreže}
+
+U prethodnom poglavlju opisana je metoda nenadziranog učenja koja može naučiti hijerarhiju značajki koristeći se neoznačenim podatcima, a zatim naučiti klasificirati pomoću manjeg skupa označenih podataka. Ovaj pristup je praktičan u većini problemskih domena zbog male količine dostupnih označenih podataka za učenje. No u praksi se pokazalo da za određene probleme, gdje ima dovoljno označenih podataka, najbolje rezultate daju metode nadziranog učenja. Problemska domena ovog rada ima dostupnu veliku količinu označenih podataka, te su svi modeli učeni metodama nadziranog učenja.
+
+Kao i kod nenadziranog učenja, konačni model koji se uči sastoji se od dijela za formiranje hijerarhije značajki i dijela za klasifikaciju, no nadzirano učenje je proces koji se provodi u jednom koraku i na jednom skupu podataka. Sam postupak učenja ne razlikuje se od standarnog učenja neuronske mreže metodom gradijentnog spusta.
+
+Istraživanja vizualnog korteksa pokazala su da njegovi procesirajući elementi reagiraju na male lokalne podražaje unutar vizualnog polja, funkcionirajući kao lokalni receptori. Glavna karakteristika prirodnih slika je njihova lokalna prostorna korelacija, pa je logično da se vizualni korteks prilagodio traženju lokalnih značajki.
+Klasične neuronske mreže sa potpuno povezanim slojevima ne iskorištavaju ovo korisno svojstvo, stoga je razvijena konvolucijska neuronska mreža koja sa svojim lokalnim prostornim filterima oponaša lokalne receptore vizualnog korteksa.
+
+\section{Lokalni prostorni filteri}
+
+Konvolucijom ostvareni filteri omogućuju provođenje kompleksnih operacija jednostavnom promjenom konvolucijske jezgre. Tako bi na primjer upotrebom Gaussian jezgre dobili za rezultat zamućenje slike, a upotrebom Sobel jezgre naglašene rubove na slici. Ručno definiranje konvolucijskih jezgri upravo odgovara ranije spomenutom ručnom određivanju značajki u standarnom postupku razvijanja klasifikatora. Cilj konvolucijske neuronske mreže je naučiti konvolucijske jezgre specifične za dane podatke, što odgovara ranije spomenutom učenju značajki iz podataka.
+
+U dubokoj konvolucijskoj mreži prvih nekoliko slojeva zaduženih za izgradnju hijerarhije značajki je konvolucijsko. Uloga prvog sloja konvolucije je jasna s obzirom da odgovara standarnom filtriranju slike sa nekom konvolucijskom jezgrom. Viši slojevi konvolucije nemaju doticaja sa ulaznom slikom, već formiraju apstraktnije lokalne značajke od značajki prethodnog sloja. Na primjer u problemu detekcije čovjeka prvi sloj konvolucije razvio bi lokalne detektore rubova na slici, sloj iznad njega formirao bi lokalne oblike koristeći se sa rubovima iz prvog sloja, a sloj za razinu više bi koristio lokalne oblike za formiranje detektora dijelova tijela čovjeka. Jednom kada mreža ima detektore značajki koje opisuju prisutnost glavnih dijelova objekta, u ovom slučaju čovjeka, klasifikacija postaje jednostavna.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=14cm]{slike/kernel_convolution.jpg}
+\caption{}
+\end{figure}
+
+\section{Dijeljenje težina}
+
+Jednom naučeni lokalni filteri mogu prepoznati neku značajku podataka, no nepoznato je gdje se ta značajka nalazi u prostoru. Kako bi razvili lokalne filtere invarijantne na poziciju u prostoru, potrebno je za svaki filter imati skup njegovih inačica koje pokrivaju sve moguće podprostore. Takav skup zovemo mapa značajki, a glavna karakteristika takve mape je dijeljenje težina između svih elemenata skupa. Svaki element konvolucijskog sloja prikazuje se tada kao matrica koja sadrži vrijednosti odziva  pripadajućeg filtera za svaku poziciju u prostoru. Primjer jedne takve mape značajki na višoj razini apstrakciji prikazan je na Slici ???, gdje je važno primjetiti da konvolucija nakon prvog sloja postaje trodimenzionalna zbog uvođenja mape značajki koja je dvodimenzionalni prikaz elementa konvolucijskog sloja.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=12cm]{slike/shared_weights.png}
+\caption{}
+\end{figure}
+
+Za učenje mreža sa dijeljenim težinama još uvijek se može koristiti metoda gradijentnog spusta, ali uz malu preinaku. Gradijent dijeljene težine računa se kao suma gradijenata svih parametara koji se dijele. 
+Osim što ostvaruje prostornu invarijantnost lokalnih filtera, dijeljenje težina znatno doprinosi i procesu učenja konvolucijske mreže. Dijeljenjem težina između parametara  mreže smanjujemo ukupan broj slobodnih parametara koje je potrebno naučiti, što smanjuje trajanje učenja. No ono što je još važnije, smanjenjem slobodnih parametara poboljšava se sposobnost generalizacije mreže stavljanjem dodatnog ograničenja na njenu kompleksnost.  
+
+\section{Lokalno udruživanje}
+
+Još jedan važan koncept dubokih konvolucijskih mreža je lokalno udruživanje, koje se može definirati kao oblik nelinearnog poduzorkovanja. U praksi se najviše koristi inačica maksimalnog lokalnog udruživanja (eng. max pooling) koja za poduzorkovanje koristi operaciju traženja maksimuma. 
+Postupak maksimalnog lokalnog udruživanja na slici sastoji se od dijeljenja slike na nepreklapajuće podprozore fiksne veličine, te uzimanja maksimalne vrijednosti svakog podprozora za rezultat. Dobivena slika za podprozore veličine 2x2 bila bi u tom slučaju dvostruko manja od originalne slike, sa vrijednostima svih maksimalnih elemenata podprozora. 
+Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenjuje na ulaznoj slici, već kao dodatni sloj nakon svakog sloja konvolucije. Time ova metoda postaje korisna na dva načina: eliminira vrijednosti koje nisu maksimalne što smanjuje količinu računanja u višim slojevima te ostvaruje jedan oblik invarijantnosti na translaciju. ...........
+ 
+ 
+
+
+
 
 \chapter{Implementacija}
 
