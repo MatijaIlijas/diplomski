@@ -43,7 +43,16 @@ Proces razvoja kvalitetnih značajki podrazumijeva promatranje svojstva ulaznih 
 
 Kako bi se koristile sve informacije iz podataka, potrebne su metode koje određuju diskriminantne značajke izravno iz skupa podataka. Među popularnijim metodama tog tipa su metoda linearne diskriminantne analize (LDA) te metoda glavnih komponenata (PCA). Linearna diskriminantna analiza pronalazi prikaz podataka koji maksimalno diskriminira podatke različitih klasa, dok metoda glavnih komponenata prikazuje podatke kao linearnu kombinaciju linearno nekoreliranih varijabli koje imaju najveću varijancu.
 
-Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz više procesirajućih slojeva koji tvore hijerarhiju gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja inspirirana je vizualnim korteksom te se zasniva na učenju cijele hijerarhije, odnosno više razina apstrakcije. 
+\begin{figure}[ht!]
+\centering
+\includegraphics[height=9cm]{slike/feature_hierarchy2.jpeg}
+\caption{}
+\end{figure}
+
+Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz više procesirajućih slojeva koji tvore hijerarhiju gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja inspirirana je vizualnim korteksom te se zasniva na učenju cijele hijerarhije, odnosno više razina apstrakcije. Primjer jedne takve hijerarhije značajki ljudskog lica naučene dubokim učenjem prikazan je na Slici ???.
+
+
+
 
 \section{Učenje dubokih mreža}
 
@@ -67,6 +76,12 @@ Vrijednosti izlaznog vektora zatim se uspoređuju sa onima ulaznog vektora kako 
 Proces učenja autoenkodera sastoji se od iterativnog enkodiranja i dekodiranja ulaznih podataka za učenje te korigiranja njegovih težina na temelju greške u rekonstrukciji. Rezultat učenja je autoenkoder sa težinama koje čine elemente njegovog srednjeg sloja apstraktnim značajkama koje dobro opisuju prezentirane podatke. 
 
 S obzirom da autoenkoder radi nelinearnu transformaciju nad ulaznim podatcima, možemo ostvariti hijerarhiju apstraktnih značajki slijednim povezivanjem više autoenkodera. Učenje se provodi iterativno, odnosno prvi autoenkoder uči se na temelju ulaznih podataka, a svaki idući na temelju naučenih značajki svojeg prethodnika. 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=9cm]{slike/stacked_autoencoders.png}
+\caption{}
+\end{figure}
 
 Ovako dobivena mreža naučena je isključivo na neoznačenim podatcima te predstavlja hijerarhiju značajki podataka bez mogućnosti klasifikacije. Konačni klasifikator dobiva se dodavanjem jedne manje mreže koja na ulaz prima značajke zadnjeg autoenkodera a na izlaz vraća klase zadanog problema. Tako povezana mreža autoenkodera i mreža za klasifikaciju zatim se uče na označenim podatcima kao jedna velika mreža.
 
@@ -109,10 +124,43 @@ Osim što ostvaruje prostornu invarijantnost lokalnih filtera, dijeljenje težin
 
 Još jedan važan koncept dubokih konvolucijskih mreža je lokalno udruživanje, koje se može definirati kao oblik nelinearnog poduzorkovanja. U praksi se najviše koristi inačica maksimalnog lokalnog udruživanja (eng. max pooling) koja za poduzorkovanje koristi operaciju traženja maksimuma. 
 Postupak maksimalnog lokalnog udruživanja na slici sastoji se od dijeljenja slike na nepreklapajuće podprozore fiksne veličine, te uzimanja maksimalne vrijednosti svakog podprozora za rezultat. Dobivena slika za podprozore veličine 2x2 bila bi u tom slučaju dvostruko manja od originalne slike, sa vrijednostima svih maksimalnih elemenata podprozora. 
-Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenjuje na ulaznoj slici, već kao dodatni sloj nakon svakog sloja konvolucije. Time ova metoda postaje korisna na dva načina: eliminira vrijednosti koje nisu maksimalne što smanjuje količinu računanja u višim slojevima te ostvaruje jedan oblik invarijantnosti na translaciju. ...........
- 
- 
+Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenjuje na ulaznoj slici, već kao dodatni sloj nakon svakog sloja konvolucije. Time ova metoda postaje korisna na dva načina: eliminira vrijednosti koje nisu maksimalne što smanjuje količinu računanja u višim slojevima, te ostvaruje jedan oblik invarijantnosti na translaciju. Invarijantnost proizlazi iz činjenice da se uzimanjem maksimalne vrijednosti nekog podprozora prepoznaje odziv lokalnog filtera na bilo kojoj lokaciji unutar podprozora, odnosno dopušta se mali pomak naučenih značajki u prostoru.
 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=10cm]{slike/max_pooling.jpeg}
+\caption{}
+\end{figure}
+
+
+\section{Ispravljena linearna jedinica}
+
+Ono što razlikuje neuronske mreže od linearnih klasifikatora su dodane prijenosne funkcije za postizanje nelinearnosti. U standarnoj potpuno povezanoj neuronskoj mreži svaki element sadrži prijenosnu funkciju, najčešće sigmoidalnog tipa. Dodavanje nelinearnosti u dubokoj konvolucijskoj mreži postiže se dodavanjem sloja koji na svaku vrijednost prijašnjeg sloja primjenjuje prijenosnu funkciju. 
+
+Primjenom sigmoidalne prijenosne funkcije kod učenja duboke arhitekture pojavljuje se problem nestajućeg gradijenta. Zbog svojstva sigmoidalne funkcije da ograničava vrijednosti na mali izlazni interval, vrijednosti gradijenata postaju izrazito male ukoliko se prosljeđuju kroz veliki broj slojeva, što onemogućuje kvalitetno učenje.
+Rješenje ovog problema je osmišljeno primjenom ispravljene linearne jedinice kao prijenosne funkcije. Ispravljena prijenosna funkcija definirana je operacijom maksimuma od ulazne vrijednosti i nule, što ju čini izrazito jednostavnom za računanje. Osim što se rješava problem nestajućeg gradijenta, postiže se i efekt raspršene aktivacije, odnosno u prosjeku se samo pola elemenata aktivira svakim prolazom kroz mrežu što pospješuje sposobnost generalizacije.  
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=15cm]{slike/sigmoid_relu.png}
+\caption{}
+\end{figure}
+
+
+\section{Konačni model}
+
+Kao što je ranije spomenuto, konačni model duboke konvolucijske mreže sastoji se od dijela za formiranje hijerarhije značajki i dijela za klasifikaciju. Prvi dio modela ostvaren je slojevima koji implementiraju ranije spomenute koncepte dubokih konvolucijskih mreža, a drugi standardnim potpuno povezanima slojevima. 
+
+Nakon svakog sloja konvolucije dodaje se sloj maksimalnog lokalnog udruživanja, a zatim sloj ispravljenih linearnih jedinica za postizanje nelinarnosti. Primjer jednog takvog konačnog modela prikazan je na Slici ???.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=15cm]{slike/convnet2.png}
+\caption{}
+\end{figure}
+
+Odabir arhitekture dubokih konvolucijskih mreža dodatno je otežan u odnosu na standarne neuronske mreže. Osim standarnih hiperparametara koji određuju broj slojeva i broj elemenata po sloju mreže, za duboku konvolucijsku arhitekturu potrebno je odrediti veličine lokalnih prostornih filtera i filtera maksimalnog lokalnog udruživanja. Veličine lokalnih filtera ponajprije ovise o veličine ulazne slike, te je cilj odrediti veličinu kojom će se kvalitetno formirati apstrakcije po slojevima. Veličine filtera maksimalnog lokalnog udruživanja uobičajeno su male zbog gubljenja velike količine podataka kod većih filtera. Također je važno uzeti u obzir da se veličine mapa značajki smanjuju nakon svakog sloja konvolucije i lokalnog udruživanja, što se u praksi kompenzira dodavanjem većeg broj mapa u višim slojevima.
 
 
 
