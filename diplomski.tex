@@ -171,7 +171,7 @@ U sklopu ovog rada razvijen je sustav za učenje i testiranje različitih arhite
 
 \section{Sustav za učenje}
 
-Kako bi cijeli proces istraživanja različitih arhitektura mreža i podataka bio što efikasniji, potrebno je prije svega imati brzi sustav za učenje. Učenje velikih arhitektura na velikoj količini podataka može trajati tjednima, pa i mjesecima, sekvencijalnim računanjem na standarnom procesoru računala. Stoga je tek pojavom kvalitetnih biblioteka, koje omogućuju optimizirano paralelno računanje na grafičkoj kartici, postalo moguće provoditi istraživanje u području dubokog učenja. 
+Kako bi cijeli proces istraživanja različitih arhitektura mreža i podataka bio što efikasniji, potrebno je prije svega imati brz sustav za učenje. Učenje velikih arhitektura na velikoj količini podataka može trajati tjednima, pa i mjesecima, sekvencijalnim računanjem na standarnom procesoru računala. Stoga je tek pojavom specijaliziranih biblioteka koje omogućuju optimizirano paralelno računanje na grafičkoj kartici postalo moguće provoditi istraživanje u području dubokog učenja. 
 Osim brzine učenja, važna je i jednostavnost definiranja parametara mreže koja se uči, kao i parametara samog procesa učenja. Kod implementacije ovog rada odabran je razvojni alat Torch zbog svoje jednostavnosti i brzine, ali i podrške velikih kompanija kao što su Facebook i Google, koje nerijetko dijele korisne implementacije sa zajednicom. 
 
 \subsection{Torch razvojni alat}
@@ -208,6 +208,39 @@ Primjer duboke konvolucijske mreže definirane kao Torch model prikazan je na Sl
 
 
 \section{Sustav za testiranje}
+
+Detaljna analiza rada naučenih mreža ključna je za pronalaženje optimalne arhitekture. Mjera optimalnosti nekog modela općenito se može definirati kao omjer njegove točnosti klasifikacije i njegove kompleksnosti. Ovisno o području primjene postoje određena ograničenja i prioriteti za različite karakteristike modela. U ovom radu razvijen je sustav koji analizira naučene mreže u dovoljno detalja da bi se donosili kvalitetni zaključci o njihovoj primjenjivosti. Osim analize pojedinih modela omogućeno je i simultano analiziranje više modela za što lakšu usporedbu njihovih pojedinih karakteristika.  
+
+\subsection{Matrica greške klasifikacije}
+
+Testiranjem klasifikatora na skupu podataka u konačnici se dobivaju dvije oznake klasa za svaki podatak. Jedna oznaka je ručno određena te uvijek predstavlja točnu klasu podatka, dok drugu dobivamo kao rezultat klasifikatora koji se testira. Standarna mjera točnosti klasifikatora koristi se dobivenim oznakama samo za informaciju o tome da li oznaka klasifikatora odgovara označenoj oznaci, te vraća kao informaciju ukupni postotak točno klasificiranih podataka. Promatranjem klasa oznaka koje klasifikator vraća u slučaju krive klasifikacije može se dobiti bolji uvid u rad analiziranog modela. 
+Matrica greške klasifikacije definirana je redovima koji predstavljaju ručne oznake klasa, te stupcima koji predstavljaju oznake dobivene klasifikatorom. Matrica se generira brojanjem uređenih parova ručne oznake i oznake klasifikatora, odnosno tražene i dobivene oznake. Tako bi na primjer potpuno točan klasifikator generirao matricu sa vrijednostima nula na svim mjestima osim na glavnoj dijagonali matrice gdje su tražene i dobivene oznake jednake.
+Ovakav prikaz greške klasifikacije omogućuje uvid u točnost klasifikatora za pojedine klase, kao i informaciju o klasama koje se često međusobno zamjenjuju.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=13cm]{slike/confusion_matrix.jpg}
+\caption{}
+\end{figure}
+
+\subsection{Prosječno trajanje klasifikacije}
+
+Kako bi se donio zaključak o primjenjivosti nekog modela potrebno je poznavati i mjeru njegove kompleksnosti. Sustav za testiranje računa za svaku arhitekturu ukupan broj računskih operacija potrebnih za klasifikaciju jednog podatka. Kod standarnih potpuno povezanih mreža taj broj odgovara ukupnom broju veza između neurona, dok se kod kovolucijskih arhitektura uzimaju u obzir veličine filtera i mjere njihovog preklapanja. 
+
+Kompleksnost modela se može definirati i brojem slobodnih parametara, koji je kod potpuno povezanih mreža jednak broju računskih operacija. Kod dubokih konvolucijskih arhitektura taj je broj manji od broja računskih operacija zbog ranije opisane metode dijeljenja težina lokalnih filtera, te se koristi za procjenu sposobnosti generalizacije klasifikatora.
+
+Iako se pomoću broja računskih operacija može aproksimirati prosječno trajanje klasifikacije, sustav za testiranje provodi i empirijsko mjerenje. Testiranjem klasifikatora na skupu podataka bilježi se trajanje svake klasifikacije, što nam između ostalog omogućuje i računanje prosječnog trajanja klasifikacije.
+
+\subsection{Simultano analiziranje više modela}
+
+Osim analize pojedinih modela, sustav za testiranje omogućuje i simultano analiziranje više modela s ciljem njihove lakše usporedbe. Kod simultanog analiziranja prikazuju se sve ranije navedene informacije za svaki pojedini model, uz dodatak tabličnih prikaza pojedinih karakteristika svih modela. 
+
+Kako bi rezultati bili što pregledniji, nakon analize svih modela generiraju se dva tablična prikaza. Prva tablica omogućuje lako uspoređivanje točnosti klasifikatora po pojedinim klasama i njihove ukupne točnosti. Druga tablica prikazuje prosječno trajanje klasifikacije za svaki analizirani model. 
+
+Kod problema klasifikacije slika analizu znatno olakšava mogućnost vizualne provjere podataka. Vrlo često se može donijeti neki zaključak o slabostima klasifikatora promatranjem slika krivo klasificiranih primjera. Sustav za testiranje sprema za svaki analizirani model krivo klasificirane slike u zasebne datoteke ovisno o krivo određenoj klasi.
+
+
+
 
 
 
