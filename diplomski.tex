@@ -58,7 +58,7 @@ Kako bi binarizacija bila robusna na promjene u osvijetljenju potrebno je određ
 
 Digitalnom morfologijom analiziraju se oblici digitalnih objekata. Slika se promatra u kontekstu teorije skupova te se predstavlja kao skup binarnih elemenata koji su grupirani u određene dvodimenzionalne strukture. Za obrađivanje binarnih slika tipično se koriste morfološke operacije dilatacije i erozije, te njihovih kombinacija, operacija zatvaranja i otvaranja. 
 
-Dilatacija prolazi sa strukturnim elementom po slici i traži maksimalnu vrijednost piksela zahvaćenog dijela slike. Pronađenu maksimalnu vrijednost postavlja kao vrijednost svojeg središnjeg piksela, te na taj način proširuje svijetle regije piksela na slici. Erozija, s druge strane, traži minimalnu vrijednost piksela te vrši isti postupak i proširuje tamne regije piksela. Binarna slika sadrži izdvojen znak u crnoj boji na bijeloj podlozi, odnosno predstavljena je tamnom regijom piksela okruženom svijetlim pikselima. Izdvojeni znak u nekim slučajevima ima problem preširokih rubova, odnosno prevelik broj tamnih piksela koji čine njegovo područje. Primjenom dilatacije dolazi do širenja svijetlih regija piksela koje okružuju znak te sužuju njegove rubove
+Dilatacija prolazi sa strukturnim elementom po slici i traži maksimalnu vrijednost piksela zahvaćenog dijela slike. Pronađenu maksimalnu vrijednost postavlja kao vrijednost svojeg središnjeg piksela, te na taj način proširuje svijetle regije piksela na slici. Erozija, s druge strane, traži minimalnu vrijednost piksela te vrši isti postupak i proširuje tamne regije piksela. Binarna slika sadrži izdvojen znak u crnoj boji na bijeloj podlozi, odnosno predstavljena je tamnom regijom piksela okruženom svijetlim pikselima. Izdvojeni znak u nekim slučajevima ima problem preširokih rubova, odnosno prevelik broj tamnih piksela koji čine njegovo područje. Primjenom dilatacije dolazi do širenja svijetlih regija piksela koje okružuju znak te sužuju njegove rubove.
 
 S obzirom da je u praksi teško znati kada je potrebna dilatacija a kada erozija, češće se koriste njihove kombinacije, otvaranje i zatvaranje.
 Operacija otvaranja primjenjuje prvo eroziju pa dilataciju na slici, čime uklanja nepotrebni šum na slici. Zatvaranje provodi prvo dilataciju slike a zatim eroziju, te uklanja mala oštećenja na objektima. 
@@ -66,8 +66,14 @@ Operacija otvaranja primjenjuje prvo eroziju pa dilataciju na slici, čime uklan
 
 \section{Klasifikacija slike znaka}
 
-Kako bi odredili ASCII vrijednost znaka, potrebno je sliku znaka provesti kroz postupak klasifikacije. 
+Kako bi odredili ASCII vrijednost znaka, potrebno je sliku znaka provesti kroz postupak klasifikacije. Standarni postupak razvijanja rješenja klasifikacije sastoji se od dva dijela, razvijanja kvalitetnih značajki koje olakšavaju učenje te razvijanja klasifikatora. 
 
+Kvalitetne značajke koje olakšavaju klasifikaciju moraju zadovoljiti više uvjeta. Značajka prije svega treba biti diskriminantna, odnosno njena vrijednost mora biti različita za slike različitih znakova. Drugi uvjet je da vrijednost značajke ostaje ista za različite primjere slika istog znaka, odnosno da je robusna na moguće varijacije unutar jedne klase. Varijacije nastaju uslijed promjenjvih uvjeta okoline, a manifestiraju se najčešće kao geometrijske transformacije i lokalne promjene kontrasta. Stoga značajke trebaju biti invarijantne na promjene osvijetljenja i pomake kao što su translacija i rotacija. Značajke se mogu odrediti ručno na temelju promatranja podataka ili izravno iz skupa podataka metodama koje su opisane u kasnijim poglavljima ovog rada.
+
+Problem učenja klasifikatora veliko je područje istraživanja, te je preveliko za opisati u sklopu ovog rada. Važno je spomenuti svojstvo generalizacije kao glavni uvjet dobre klasifikacije koji definira sposobnost klasifikatora da točno klasificira dotad neviđene primjere. Veliku ulogu u konačnim rezultatima klasifikatora imaju prethodno navedene metode određivanja značajki podataka, kao i sam skup podataka na kojem se klasifikatoru uči.
+
+
+  
 
 \chapter{Umjetne neuronske mreže}
 
