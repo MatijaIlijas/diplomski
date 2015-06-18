@@ -299,30 +299,49 @@ Kod problema klasifikacije slika analizu znatno olakšava mogućnost vizualne pr
 
 \chapter{Rezultati}
 
+Cilj ovog rada bio je analizirati rad dubokih konvolucijskih mreža na problemu raspoznavanja znakova te ih usporediti sa standarnim neuronskim mrežama. Modeli su učeni i testirani na internim skupovima podataka tvrtke Microblink, a prilikom testiranja provedena je analiza i njihovog internog klasifikatora. 
+
+Istraživanje je provedeno na problemu raspoznavanju znakova na osobnim iskaznicama, takozvanim MRZ podatcima. MRZ podatci imaju 37 klasa znakova fonta ocrb, te obuhvaćaju znamenke, velika slova te znak manje. U ovom radu koriste se dva skupa takvih podataka za učenje i testiranje klasifikatora. Prvi skup se zove sintetizirani skup, a dobiven je slikanjem printanih imitacija osobnih iskaznica. Sastoji se od 450 tisuća označenih slika znakova te je slikan sa više različitih modela mobitela u raznim uvjetima osvijetljenja. Drugi skup dobiven je slikanjem pravih osobnih iskaznica u različitim uvjetima, te sadrži oko 12 tisuća ručno označenih slika znakova. Za potrebe učenja i testiranja sintetizirani skup je podijeljen na 300 tisuća slika za učenje i 150 tisuća za testiranje modela, a ručno označeni skup koristi se za dodatno testiranje sposobnosti generalizacije modela.
 
 
 
-\begin{figure}
-    \input{introduction}
+\section{Utjecaj predprocesiranja podataka}
+
+
+U ranijim poglavljima spomenuta je standarna praksa predprocesiranja slika znakova prije njihovog klasificiranja. Promjenjivi uvjeti okoline rezultiraju raznim transformacijama originalne slike koje otežavaju njenu klasifikaciju, stoga je logično primjenjivati metode ublažavanja posljedica tih transformacija. Takve metode najčešće su neki oblik operacije binarizacije, različite po načinu na koji se definira njihov prag. Jedna takva metoda koja uzima u obzir lokalne promjene osvijetljenja je metoda adaptivnog praga opisana ranije u radu.
+
+Metode predprocesiranja razvijene su sa ciljem naglašavanja korisnih informacija, te odbacivanjem onih nepotrebnih. Mana ovog pristupa je što se odluka o korisnosti informacija donosi pomoću ručno razvijenih metoda zasnovanih na ljudskom promatranju podataka, te dolazi do gubitka korisnih informacija koje čovjek nije u stanju vidjeti. Kako bi se koristile sve informacije iz podataka, potrebne su metode koje pronalaze korisne informacije izravno iz skupa podataka. Takve metode razvijaju se u području dubokog učenja gdje se na temelju skupa podataka uči cijela hijerarhija značajki i klasifikator u jednom procesu učenja. Posljedice promjenjivih uvjeta okoline se tada rješavaju na način da se procesom učenja na velikoj količini različitih oblika podataka razvije kvalitetna hijerarhija značajki otporna na nastale transformacije.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=13cm]{slike/preprocessing_comparison.png}
+\caption{}
 \end{figure}
 
+U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesiranja podataka na točnost klasifikatora. Korištena je duboka konvolucijska mreža sa 10 mapi značajki u prvom i 20 mapi značajki u drugom konvolucijskom sloju. Testiranje je provedeno na slikama dimenzija 18 piksela u 3 različita oblika: predprocesiranim metodom adaptivnog praga, predprocesiranim internom metodom tvrtke Microblink, te originalnim slikama bez predprocesiranja. Rezultati prikazani u tablici ??? potvrdili su prednost metoda naučenih na skupu podataka.    
 
+
+\begin{figure}[ht!]
 \begin{center}
-    \begin{tabular}{ | l | l | l | p{5cm} |}
+\centering
+
+
+    \begin{tabular}{ | c| c| c|c |}
     \hline
-    Day & Min Temp & Max Temp & Summary \\ \hline
-    Monday & 11C & 22C & A clear day with lots of sunshine.  
-    However, the strong breeze will bring down the temperatures. \\ \hline
-    Tuesday & 9C & 19C & Cloudy with rain, across many northern regions. Clear spells
-    across most of Scotland and Northern Ireland,
-    but rain reaching the far northwest. \\ \hline
-    Wednesday & 10C & 21C & Rain will still linger for the morning.
-    Conditions will improve by early afternoon and continue
-    throughout the evening. \\
+    Skup podataka & Adaptivni prag & Microblink interni & Bez predprocesiranja \\ \hline
+    Sintetizirani & 98.29\% & 97.87\%  & 99.57\% \\ \hline
+    Ručno označeni & 96.35\% & 97.66\% & 99.21\% \\ \hline
+
     \hline
     \end{tabular}
 \end{center}
+\caption{}
+\end{figure}
 
+
+%\begin{figure}
+ %   \input{introduction}
+%\end{figure}
 
 \chapter{Zaključak}
 Zaključak.
