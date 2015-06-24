@@ -86,6 +86,14 @@ Mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povez
 \section{Umjetni neuron}
 \section{Učenje neuronskih mreža}
 
+!!
+!!
+Prilagođenost modela podatcima ponajprije ovisi o njegovoj kompleksnosti, odnosno broju slobodnih parametara funkcije koju predstavlja.
+!!
+!!
+!!
+!!
+
 
 \chapter{Duboko učenje}
 
@@ -343,8 +351,29 @@ U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesi
  %   \input{introduction}
 %\end{figure}
 
+\section{Pronalaženje optimalne arhitekture mreže}
+
+Glavna mjera kvalitete naučenog modela je njegova sposobnost generalizacije, odnosno koliko dobro klasificira dotad neviđene primjere. Odabir prave arhitekture modela ključan je za dobru generalizaciju, stoga je u ovom radu proveden postupak pronalaženja optimalne arhitekture. Ovaj postupak se još naziva i selekcija modela, a zasniva se na testiranju više arhitektura različitih kompleksnosti. Prilikom odabira optimalne arhitekture postupno se povećava kompleksnost modela, te se promatra njegova točnost na skupovima podataka za testiranje. 
+
+Selekcija modela napravljena je za standarne neuronske mreže i duboke konvolucijske mreže kako bi se u konačnici mogli usporediti rezultati njihovih najboljih arhitektura.
+
+\subsection{Standarne neuronske mreže}
+
+\subsection{Konvolucijske neuronske mreže}
+
+
 \chapter{Zaključak}
-Zaključak.
+
+Prepoznavanje teksta sa slike ima vrlo široku primjenu u mnogim područjima ljudske djelatnosti. Razvijanjem mobilne tehnologije i njene primjene u svakodnevnom životu pojavljuju se nove izazovnije primjene optičkog prepoznavanja znakova. Algoritam za prepoznavanje znakova mora biti robustan na promjenjive uvjete okoline, ali i dovoljno brz za primjenu u stvarnom vremenu na mobilnim uređajima. 
+
+Duboko učenje je novo obečavajuće područje istraživanja inspirirano vizualnim korteksom mozga sisavca. Zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije, te je pokazalo jako dobre rezultate na problemima raspoznavanja uzoraka, posebice u području računalnog vida. Za problem klasifikacije na temelju slika razvijene su duboke konvolucijske neuronske mreže koje traže lokalne značajke na slici pomoću lokalnih filtera ostvarenih konvolucijom. 
+
+U ovom radu razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža, kao i prikaz rezultata u svrhu usporedbe različitih modela. Korištenjem sustava provedeno je istraživanje primjene standarnih neuronskih mreža i dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju, a osim točnosti naučenih klasifikatora uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije.
+
+
+
+
+
 
 \bibliography{literatura}
 \bibliographystyle{fer}
