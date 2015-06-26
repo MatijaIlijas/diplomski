@@ -328,28 +328,20 @@ Metode predprocesiranja razvijene su sa ciljem naglašavanja korisnih informacij
 
 U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesiranja podataka na točnost klasifikatora. Korištena je duboka konvolucijska mreža sa 10 mapi značajki u prvom i 20 mapi značajki u drugom konvolucijskom sloju. Testiranje je provedeno na slikama dimenzija 18 piksela u 3 različita oblika: predprocesiranim metodom adaptivnog praga, predprocesiranim internom metodom tvrtke Microblink, te originalnim slikama bez predprocesiranja. Rezultati prikazani u tablici ??? potvrdili su prednost metoda naučenih na skupu podataka.    
 
-
 \begin{figure}[ht!]
 \begin{center}
 \centering
-
-
     \begin{tabular}{ | c| c| c|c |}
     \hline
     Skup podataka & Adaptivni prag & Microblink interni & Bez predprocesiranja \\ \hline
     Sintetizirani & 98.29\% & 97.87\%  & 99.57\% \\ \hline
-    Ručno označeni & 96.35\% & 97.66\% & 99.21\% \\ \hline
-
+    Ručno označeni & 96.35\% & 97.66\% & 99.21\% \\  
     \hline
     \end{tabular}
 \end{center}
 \caption{}
 \end{figure}
 
-
-%\begin{figure}
- %   \input{introduction}
-%\end{figure}
 
 \section{Pronalaženje optimalne arhitekture mreže}
 
@@ -359,7 +351,106 @@ Selekcija modela napravljena je za standarne neuronske mreže i duboke konvoluci
 
 \subsection{Standarne neuronske mreže}
 
+Dodavanje slojeva neuronskoj mreži u teoriji omogućuje razvijanje hijerarhije značajki koja robusnije predstavlja objekt detekcije. U svrhu što boljeg razumijevanja utjecaja dubine arhitekture i njenog tipa (standarni ili konvolucijski) na uspješnost klasifikacije,  provedeno je istraživanje i nad dubokim standarnim neuronskim mrežama. Analiziran je rad 5 arhitektura različitih dubina, od plitke dvoslojne mreže do duboke mreže sa šest slojeva, te su prikazani rezultati uzlazno s obzirom na njihovu kompleksnost na Slici ???. 
+
+\begin{figure}[ht!]
+\begin{center}
+    \input{grafovi/nn_complexity}
+    \caption{}
+\end{center}
+\end{figure}
+
+Dobiveni rezultati pokazuju značajnu razliku u točnosti klasifikacije između dva testna skupa za sve arhitekture. Prilikom testiranja ustanovljeno je da svi klasifikatori vrlo dobro generaliziraju na testnom sintetiziranom skupu iako on nije korišten za njihovo učenje. Razlog tome mogu biti kontrolirani uvjeti u kojima je sintetizirani skup generiran, te jednolikost printanih imitacija kartica. Rezultati na ručno označenom setu lošiji su nego na sintetiziranom za sve arhitekture te nam daju bolji uvid u sposobnost generalizacije standarnih neuronskih mreža.
+
+Utjecaj dubine arhitekture, odnosno broja slojeva mreže, nije vidljiv na rezultatima na sintetiziranom testnom skupu zbog već vrlo visokog postotka točnosti klasifikacije dvoslojne mreže. Na ručno označenom skupu vidljivi su bolji rezultati prilikom dodavanja jednog sloja dubine dvoslojnoj arhitekturi, no dodatno dodavanje slojeva ne pokazuje značajno i konzistentno bolje rezultate. Stoga je optimalna arhitektura standarnih neuronskih mreža ona sa tri sloja neurona.
+
 \subsection{Konvolucijske neuronske mreže}
+
+Kod definiranja arhitekture konvolucijskih mreža postoje određena ograničenja prilikom odabira njenih parametara. S obzirom da se ulazna slika postepeno smanjuje u dimenzijama zbog primjene konvolucijske jezgre i lokalnog udruživanja, broj slojeva mreže je ograničen. U ovom radu koriste se relativno male ulazne slike dimenzija 18 piksela te lokalni filteri dimenzija 3 piksela, stoga mreže mogu imati najviše dva konvolucijska sloja. Analizirano je 7 arhitektura sa različitim brojem mapi značajki u svakom konvolucijskom sloju, te su prikazani rezultati uzlazno s obzirom na njihovu kompleksnost na Slici ???.
+
+\begin{figure}[ht!]
+\begin{center}
+    \input{grafovi/cnn_complexity}
+    \caption{}
+\end{center}
+\end{figure}
+
+Kao i kod analize standarnih neuronskih mreža rezultati na sintetiziranom testnom skupu bolji su od onih na ručno označenom skupu, no za određene arhitekture ta je razlika mala. Na prikazu rezultata vidljiva je standarna krivulja generalizacije za oba testna skupa. Točnost klasifikacije je mala za nedovoljno kompleksne modele jer njihova arhitektura nema dovoljno slobodnih parametara da bi kvalitetno opisala podatke hijerarhijom značajki. Za previše kompleksne modele je točnost na testnim skupovima također manja zbog previše slobodnih parametara koji omogućuju pretjeranu prilagođenost modela podatcima za učenje. Analizom je pronađena optimalna arhitektura sa 10 mapi značajki u prvom konvolucijskom sloju te 20 mapi značajki u drugom konvolucijskom sloju. Rezultati modela sa optimalnom arhitekturom pokazuju dobru sposobnost generalizacije na oba testna skupa.
+
+\section{Usporedba optimalnih arhitektura}
+
+Usporedbom najboljih predstavnika standarnih i konvolucijskih neuronskih mreža moguće je dobiti uvid u utjecaje različitih tipova arhitektura. Analizom standarnih mreža pokazano je da se dodavanjem dubine plitkoj dvoslojnoj mreži povećava njena sposobnost generalizacije. Optimalna konvolucijska arhitektura također je duboka, stoga dobiveni rezultati upućuju na prednost dubokih arhitektura nad plitkima. 
+
+U tablici ??? prikazana je usporedba rezultata dva optimalna modela na oba testna skupa. Točnost klasifikacije na sintetiziranom skupu približno je jednaka za oba modela, no na ručno označenom skupu rezultati su bolji kod konvolucijskog modela. Rezultati upućuju na to da konvolucijska arhitektura mreže poboljšava sposobnost generalizacije modela.  
+
+\begin{table}[ht!]
+\begin{center}
+\centering
+    \begin{tabular}{ | c| c| c|c |}
+    \hline    		
+    Skup podataka & Standarna arhitektura & Konvolucijska arhitektura \\ \hline
+    Sintetizirani & 99.91\% & 99.57\%  \\ \hline
+    Ručno označeni & 96.31\% & 	99.21\%  \\
+    \hline
+    \end{tabular}
+\end{center}
+\caption{}
+\end{table}
+
+Analizom točnosti klasifikacije za svaku zasebnu klasu te promatranjem krivo klasificiranih primjera mogu se točno vidjeti slučajevi koji standarnoj neuronskoj mreži predstavljaju problem a konvolucijska neuronska mreža uspijeva točno klasificirati. U tablici  ??? prikazana je usporedba postotka točnosti klasifikacije za takve slučajeve. Jedan takav slučaj je sličnost između znamenke '0' i slova 'O' koji se razlikuju samo po zaobljenosti konture. Rezultati upućuju na to da lokalni filteri konvolucijskih mreža mogu robusnije predstaviti zaobljene konture i time doprinjeti robusnosti algoritma prilikom razlikovanja ovih klasa. Također problematičan slučaj predstavlja razlikovanje slova 'B' od znamenke '8'. Optimalni model standarne neuronske mreže velik broj slova 'B' krivo je klasificirao kao znamenku '8', dok je konvolucijska mreža imala vrlo visok postotak točnosti klasifikacije.
+
+\begin{table}[ht!]
+\begin{center}
+\centering
+    \begin{tabular}{ | c| c| c|c | c| c| c|}
+    \hline    		
+    Arhitektura & Znamenka '0' & Slovo 'O' & Znamenka '8' & Slovo 'B'  \\ \hline
+    Standarna & 74.15\% & 91.97\% & 98.69\% & 38.57\%  \\ \hline
+    Konvolucijska & 97.55\% & 95.35\% & 99.81\% & 99.29\%   \\
+    \hline
+    \end{tabular}
+\end{center}
+\caption{}
+\end{table}
+
+Osim točnosti naučenih klasifikatora prilikom analize uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije. Kao što je ranije spomenuto, kompleksnost modela može se aproksimirati preko broja računskih operacija potrebnih za klasifikaciju jedne slike, ili preko broja slobodnih parametara, odnosno broja težina koje se mogu mijenjati prilikom učenja mreže.  
+
+\begin{table}[ht!]
+\begin{center}
+\centering
+    \begin{tabular}{ | c| c| c|c | c| c| c|}
+    \hline    		
+    Svojstvo & Standarna arhitektura & Konvolucijska arhitektura \\ \hline
+    Broj računskih operacija & 170550 & 97780  \\ \hline
+    Broj slobodnih parametara & 170550 & 6930   \\ \hline
+    Prosječno trajanje klasifikacije  & 0.202 ms & 0.223 ms \\
+    \hline
+    \end{tabular}
+\end{center}
+\caption{}
+\end{table}
+
+U tablici ??? prikazana je usporedba navedenih svojstava za oba optimalna modela. Po broju računskih operacija standarni model gotovo je dvostruko kompleksniji, no prosječno trajanje klasifikacije približno je jednako za oba modela. Razlog tome je što se proječno trajanje klasifikacije računa empirijski te ovisi o implementaciji svih računskih operacija, koje u ovom slučaju traju dulje kod konvolucijskih mreža. 
+
+Važno je primjetiti da konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture. Manji broj slobodnih parametara izravna je posljedica dodatnih ograničenja koja mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. Ovo svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
+
+\section{Usporedba svih klasifikatora}
+
+Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena je i analiza internog klasifikatora tvrtke MicroBlink. Radi se o klasifikatoru razvijenom po klasičnim principima rješavanja problema raspoznavanja znakova gdje se klasifikacija provodi u tri glavna koraka. Prvi korak je predprocesiranje ulazne slike gdje se nastoji ublažiti transformacije nastale promjenjivim uvjetima okoline. Idući korak je računanje diskriminantnih značajki ulazne slike kako bi se dodatno olakšao problem klasifikacije, te je konačni korak primjena algoritma klasifikacije na značajke slike.
+
+\begin{table}[ht!]
+\begin{center}
+\centering
+    \begin{tabular}{ | c| c| c|c |}
+    \hline    		
+    Skup podataka & Standarna arhitektura & Konvolucijska arhitektura \\ \hline
+    Sintetizirani & 99.91\% & 99.57\%  \\ \hline
+    Ručno označeni & 96.31\% & 	99.21\%  \\
+    \hline
+    \end{tabular}
+\end{center}
+\caption{}
+\end{table}
 
 
 \chapter{Zaključak}
