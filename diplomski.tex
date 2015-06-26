@@ -86,14 +86,6 @@ Mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povez
 \section{Umjetni neuron}
 \section{Učenje neuronskih mreža}
 
-!!
-!!
-Prilagođenost modela podatcima ponajprije ovisi o njegovoj kompleksnosti, odnosno broju slobodnih parametara funkcije koju predstavlja.
-!!
-!!
-!!
-!!
-
 
 \chapter{Duboko učenje}
 
@@ -328,7 +320,7 @@ Metode predprocesiranja razvijene su sa ciljem naglašavanja korisnih informacij
 
 U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesiranja podataka na točnost klasifikatora. Korištena je duboka konvolucijska mreža sa 10 mapi značajki u prvom i 20 mapi značajki u drugom konvolucijskom sloju. Testiranje je provedeno na slikama dimenzija 18 piksela u 3 različita oblika: predprocesiranim metodom adaptivnog praga, predprocesiranim internom metodom tvrtke Microblink, te originalnim slikama bez predprocesiranja. Rezultati prikazani u tablici ??? potvrdili su prednost metoda naučenih na skupu podataka.    
 
-\begin{figure}[ht!]
+\begin{table}[ht!]
 \begin{center}
 \centering
     \begin{tabular}{ | c| c| c|c |}
@@ -340,7 +332,7 @@ U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesi
     \end{tabular}
 \end{center}
 \caption{}
-\end{figure}
+\end{table}
 
 
 \section{Pronalaženje optimalne arhitekture mreže}
@@ -434,23 +426,46 @@ U tablici ??? prikazana je usporedba navedenih svojstava za oba optimalna modela
 
 Važno je primjetiti da konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture. Manji broj slobodnih parametara izravna je posljedica dodatnih ograničenja koja mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. Ovo svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
 
-\section{Usporedba svih klasifikatora}
+\section{Usporedba sa Microblink klasifikatorom}
 
-Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena je i analiza internog klasifikatora tvrtke MicroBlink. Radi se o klasifikatoru razvijenom po klasičnim principima rješavanja problema raspoznavanja znakova gdje se klasifikacija provodi u tri glavna koraka. Prvi korak je predprocesiranje ulazne slike gdje se nastoji ublažiti transformacije nastale promjenjivim uvjetima okoline. Idući korak je računanje diskriminantnih značajki ulazne slike kako bi se dodatno olakšao problem klasifikacije, te je konačni korak primjena algoritma klasifikacije na značajke slike.
+Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena je i analiza internog klasifikatora tvrtke Microblink. Radi se o klasifikatoru razvijenom po klasičnim principima rješavanja problema raspoznavanja znakova gdje se klasifikacija provodi u tri glavna koraka. Prvi korak je predprocesiranje ulazne slike gdje se nastoji ublažiti transformacije nastale promjenjivim uvjetima okoline. Idući korak je računanje diskriminantnih značajki ulazne slike kako bi se dodatno olakšao problem klasifikacije, te je konačni korak primjena algoritma klasifikacije na značajke slike.
 
 \begin{table}[ht!]
 \begin{center}
 \centering
     \begin{tabular}{ | c| c| c|c |}
     \hline    		
-    Skup podataka & Standarna arhitektura & Konvolucijska arhitektura \\ \hline
-    Sintetizirani & 99.91\% & 99.57\%  \\ \hline
-    Ručno označeni & 96.31\% & 	99.21\%  \\
+    Klasifikator & Sintetizirani skup  & Ručno označeni skup \\ \hline
+    Microblink  & 86.93\% & 91.69\%  \\ \hline
+    Standarna mreža & 99.91\% & 96.31\%  \\ \hline
+    Konvolucijska mreža & 99.57\% &  99.21\% \\
     \hline
     \end{tabular}
 \end{center}
 \caption{}
 \end{table}
+
+Usporedbom rezultata u tablici ??? može se vidjeti da interni klasifikator tvrtke Microblink daje lošije rezultate od standarnih i konvolucijskih neuronskih mreža.
+Postoji više faktora koji u teoriji objašnjavaju ovakve rezultate. Jedan problem je negativni utjecaj predprocesiranja podataka zbog nesavršenosti ručno razvijenih metoda obrade slike. Zbog gubitka informacija neke od slika postaju neprepoznatljive nakon algoritma za predprocesiranje, što čini točnu klasifikaciju nemogućom. Još jedan faktor koji otežava klasifikaciju težih primjera je nesavršenost ručno definiranih značajki slike koje se predaju klasifikatoru. Umjesto da se značajke uče na temelju skupa podataka kako bi se maksimizirala njihova diskriminantnost, one se ručno definiraju na temelju ljudskog promatranja podataka što dovodi do gubitka informacija. Te konačno, ovako razvijeni klasifikator ima samo jedan sloj asptrakcije što onemogućuje stvaranje hijerarhije značajki koje robusnije predstavljaju objekt klasifikacije i poboljšavaju točnost klasifikatora.
+
+\begin{table}[ht!]
+\begin{center}
+\centering
+    \begin{tabular}{ | c| c| c|c |}
+    \hline    		
+    Klasifikator & Prosječno trajanje klasifikacije \\ \hline
+    Microblink & 0.025 ms \\ \hline
+    Standarna mreža & 0.202 ms  \\ \hline
+    Konvolucijska mreža &  0.223 ms \\
+    \hline
+    \end{tabular} 
+\end{center}
+\caption{}
+\end{table}
+
+Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova brzina. U tablici ??? može se vidjeti da je njegovo prosječno trajanje klasifikacije za red veličine manje od onog od neuronskih mreža. Brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju, no konačna brzina klasifikatora može se i dodatno smanjiti ukoliko se koriste u kombinaciji sa bržim Microblink klasifikatorom. 
+
+
 
 
 \chapter{Zaključak}
@@ -461,7 +476,16 @@ Duboko učenje je novo obečavajuće područje istraživanja inspirirano vizualn
 
 U ovom radu razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža, kao i prikaz rezultata u svrhu usporedbe različitih modela. Korištenjem sustava provedeno je istraživanje primjene standarnih neuronskih mreža i dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju, a osim točnosti naučenih klasifikatora uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije.
 
+Dobiveni rezultati potvrdili su prednosti primjene dubokih konvolucijskih mreža na problemu raspoznavanja znakova. 
 
+Analiziranjem rada klasifikatora sa i bez predprocesiranja podataka pokazana je prednost prosljeđivanja neobrađenih slika klasifikatoru u svrhu očuvanja informacija slike. Posljedice promjenjivih uvjeta okoline se tada rješavaju na način da se procesom učenja na velikoj količini različitih oblika podataka razvije kvalitetna hijerarhija značajki otporna na nastale transformacije.
+
+Postupkom selekcije modela nad standarnim neuronskim arhitekturama ustanovljeno je da se dodavanjem dubine neuronskoj mreži pospješuje njena sposobnost generalizacije. Ovaj rezultat može se protumačiti kao posljedica razvijanja hijerarhije značajki koja robusnije predstavlja objekt detekcije. 
+
+Usporedbom rezultata optimalnih modela standarnih i konvolucijskih neuronskih mreža pokazana je prednost korištenja konvolucijske arhitekture na problemu raspoznavanja znakova. Konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture, što je izravna posljedica dodatnih ograničenja koje mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. To svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
+
+
+Rezultati klasifikatora tvrtke Microblink lošiji su od rezultata standarnih i konvolucijskih neuronskih mreža, što se može objasniti negativnim utjecajem predprocesiranja podataka i ručnog definiranja značajki samo jedne razine apstrakcije. Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova za red veličine veća brzina, no brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju. 
 
 
 
