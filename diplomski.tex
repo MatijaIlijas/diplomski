@@ -79,17 +79,40 @@ Problem učenja klasifikatora veliko je područje istraživanja, te je preveliko
 
 \chapter{Umjetne neuronske mreže}
 
-Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Jedna od najčešćih primjena neuronskih mreža je u području raspoznavanja uzoraka.
+Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Jedna od najčešćih primjena neuronskih mreža je u području raspoznavanja uzoraka, te se vrlo često koristi upravo za raspoznavanje znakova.
 
-Mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povezuje prethodna dva. Čvorišta, tzv. neuroni, skrivenog sloja povezani su težinskim vezama s ulaznim i izlaznim neuronima. Dvije su faze rada umjetnih neuronskih mreža: učenje (treniranje) i obrada podataka (eksploatacija). Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom treniranja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
+ 
 
-\section{Umjetni neuron}
+\section{Arhitektura neuronske mreže}
+
+Neuronska mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povezuje prethodna dva. Čvorišta, tzv. neuroni, skrivenog sloja povezani su težinskim vezama s ulaznim i izlaznim neuronima. Standarna arhitektura neuronske mreže je potpuno povezana i aciklička što znači da su svi neuroni iz susjednih slojeva međusobno povezani te da nema ciklusa u mreži između neurona. 
+
+Umjetni neuron je matematička funkcija inspirirana funkcionalnošću biološkog neurona koja radi težinsku sumu svojih ulaza a zatim primjenjuje svoju prijenosnu funkciju na izlazu. Kako bi mreža mogla predstaviti visoko nelinearni odnos između njenog ulaza i izlaza, prijenosna funkcija njenih neurona mora biti nelinearna funkcija. Najčešće korištena prijenosna funkcija je sigmoidalna funkcija koja se koristi zbog svojeg blažeg prijenosa od obične funkcije s fiksnim pragom, te derivabilnosti čija će se važnost opisati kasnije.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=10cm]{slike/neural_architecture.jpeg}
+\caption{}
+\end{figure}
+
 \section{Učenje neuronskih mreža}
+
+Dvije su faze rada umjetnih neuronskih mreža: učenje (treniranje) i obrada podataka (eksploatacija). Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom učenja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
+
+Jedna neuronska mreža sa svojim težinama može se gledati kao nelinearna funkcija sa više varijabli, te se njeno učenje može opisati kao traženje minimuma te funkcije s obzirom na grešku klasifikacije. Ovaj postupak zove se gradijentni spust, a algoritam koji implementira tu metodu za učenje neuronske mreže zove se algoritam s povratnom vezom (eng. Backpropagation). Radi gradijentne metode prijenosna funkcija neurona mora biti derivabilna, što vrijedi za ranije spomenutu sigmoidalnu funkciju.
+
+Glavna mjera uspješnosti neuronske mreže u klasifikaciji je njena sposobnost generalizacije, odnosno koliko dobro može klasificirati primjere koji nisu korišteni prilikom njenog učenja. Stoga se za potrebe učenja neuronskh mreža podatci dijele na dva (a nekad i tri) skupa: skup za učenje, skup za testiranje i ponekad skup za dodatnu evaluaciju. Kada je greška klasifikacije velika na testnom skupu a mala na skupu za učenje kažemo da je mreža pretjerano prilagođena skupu za učenje (eng. overfitting). Kako bi se dobila mreža sa najboljom sposobnošću generalizacije, postupak učenja se zaustavlja kada se greška mreže na testnom skupu prestane smanjivati.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=10cm]{slike/overfitting.png}
+\caption{}
+\end{figure}
 
 
 \chapter{Duboko učenje}
 
-Duboko učenje se u zadnjih nekoliko godina pojavilo kao novo obečavajuće područje statističkog strojnog učenja. Iako je sama ideja prezentirana u radovima Yanna Lecuna i Georgea Hintona prije gotovo 30 godina, duboko učenje je postalo predmetom istraživanja relativno nedavno. Razlog tome su bila tada nedovoljno snažna računala za učenje velikih modela karakterističnih za taj pristup. Koncept dubokog učenja zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije. Ideja je djelomično inspirirana vizualnim korteksom mozga sisavaca koji se sastoji od niza procesirajućih elemenata koji obrađuju vizualni podražaj. Dokaz da duboko učenje u nekoj mjeri oponaša vizualni korteks su i nedavna istraživanja gdje su se naučene značajke pokazale slične onima u korteksu. Glavna karakteristika algoritama dubokog učenja je velik broj slojeva kroz koje ulazni podatak mora proći do izlaza, gdje se prvi dio prolaza može zamisliti kao formiranje hijerarhijskog prikaza podatka, a drugi kao proces klasifikacije. Time jedan algoritam dubokog učenja ustvari preuzima zadatak izvlačenja korisnih značajki iz podataka uz sami zadatak klasifikacije. Kod učenja takvog algoritma cijeli se postupak uči na temelju podataka, te se time gubi potreba za ručnim definiranjem značajki podataka. 
+Duboko učenje se u zadnjih nekoliko godina pojavilo kao novo obečavajuće područje statističkog strojnog učenja. Iako je sama ideja prezentirana u radovima Yanna Lecuna i Geoffreya Hintona prije gotovo 30 godina, duboko učenje je postalo predmetom istraživanja relativno nedavno. Razlog tome su bila tada nedovoljno snažna računala za učenje velikih modela karakterističnih za taj pristup. Koncept dubokog učenja zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije. Ideja je djelomično inspirirana vizualnim korteksom mozga sisavaca koji se sastoji od niza procesirajućih elemenata koji obrađuju vizualni podražaj. Dokaz da duboko učenje u nekoj mjeri oponaša vizualni korteks su i nedavna istraživanja gdje su se naučene značajke pokazale slične onima u korteksu. Glavna karakteristika algoritama dubokog učenja je velik broj slojeva kroz koje ulazni podatak mora proći do izlaza, gdje se prvi dio prolaza može zamisliti kao formiranje hijerarhijskog prikaza podatka, a drugi kao proces klasifikacije. Time jedan algoritam dubokog učenja ustvari preuzima zadatak izvlačenja korisnih značajki iz podataka uz sami zadatak klasifikacije. Kod učenja takvog algoritma cijeli se postupak uči na temelju podataka, te se time gubi potreba za ručnim definiranjem značajki podataka. 
 
 \section{Hijerarhijski prikaz podataka}
 
@@ -465,6 +488,13 @@ Postoji više faktora koji u teoriji objašnjavaju ovakve rezultate. Jedan probl
 
 Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova brzina. U tablici ??? može se vidjeti da je njegovo prosječno trajanje klasifikacije za red veličine manje od onog od neuronskih mreža. Brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju, no konačna brzina klasifikatora može se i dodatno smanjiti ukoliko se koriste u kombinaciji sa bržim Microblink klasifikatorom. 
 
+\section{Poboljšanja}
+ 
+Kao i kod svakog pristupa, moguća su poboljšanja u točnosti i brzini izvođenja klasifikacije. U području dubokog učenja veliki je naglasak na učenju svakog koraka procesa klasifikacije na temelju podataka, stoga je dodatni naglasak na važnosti podataka za učenje. Predstavljene duboke konvolucijske arhitekture pokazale su se sposobnima graditi kvalitetne hijerarhije značajki na temelju podataka, no za to je prije svega potrebna velika količina kvalitetnih podataka koji dobro predstavljaju domenu problema. Stoga je za budući napredak prije svega potrebno prikupljanje što veće količine kvalitetnih podataka za učenje. 
+
+Najbolji rezultati u ovom radu postignuti su sa konvolucijskom arhitekturom vrlo male kompleksnosti, svega nekoliko tisuća slobodnih parametara. Dodatnim povećavanjem kompleksnosti smanjivala se sposobnost generalizacije modela, što upućuje na pretjeranu prilagodbu podatcima za učenje. Ograničavanje kompleksnosti klasifikatora kako bi se povećala sposobnost generalizacije standarni je pristup prilikom selekcije modela, no pretjerana potreba za ovim metodama upućuje na nedovoljno kvalitetne podatke za učenje. Za učenje se u ovom radu koristi sintetizirani skup podataka prikupljen nad imitacijama osobnih iskaznica i u kontroliranim uvjetima. Stoga je jedno od mogućih poboljšanja razvijanje kvalitetnijih imitacija kartica, te porađivanje na raznolikosti uvjeta prilikom slikanja.
+
+Naučeni duboki konvolucijski modeli tipično imaju vrlo malu brzinu izvođenja klasifikacije zbog njihove velike dubine i kompleknosti, što ih čini teže primjenjivima na problemima u stvarnom vremenu. U ovom radu optimalni modeli vrlo su male kompleknosti zbog ranije spomenutih razloga, te imaju dovoljno veliku brzinu izvođenja klasifikacije za primjenu u stvarnom vremenu. No poboljšavanjem kvalitete podataka za učenje moći će se iskoristiti potencijal kompleksnijih modela, što će za posljedicu imati problem izvođenja tih modela u stvarnom vremenu. Jedna metoda koja bi mogle poboljšati brzinu ovakvih modela je metoda Geoffreya Hintona pod nazivom distilacija. Ideja je koristiti izlaze naučenog velikog modela kao takozvane mekane oznake za svaku sliku prilikom učenja manjeg modela. Istraživanje je pokazalo da se sa mekanim oznakama prenosi dio informacija o podatcima koje je prikupio veliki model, što poboljšava konačnu točnost naučenog manjeg modela. Tako naučeni manji model može se koristiti u stvarnom vremenu zbog svoje manje kompleksnosti i time veće brzine izvođenja klasifikacije.   
 
 
 
@@ -483,7 +513,6 @@ Analiziranjem rada klasifikatora sa i bez predprocesiranja podataka pokazana je 
 Postupkom selekcije modela nad standarnim neuronskim arhitekturama ustanovljeno je da se dodavanjem dubine neuronskoj mreži pospješuje njena sposobnost generalizacije. Ovaj rezultat može se protumačiti kao posljedica razvijanja hijerarhije značajki koja robusnije predstavlja objekt detekcije. 
 
 Usporedbom rezultata optimalnih modela standarnih i konvolucijskih neuronskih mreža pokazana je prednost korištenja konvolucijske arhitekture na problemu raspoznavanja znakova. Konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture, što je izravna posljedica dodatnih ograničenja koje mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. To svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
-
 
 Rezultati klasifikatora tvrtke Microblink lošiji su od rezultata standarnih i konvolucijskih neuronskih mreža, što se može objasniti negativnim utjecajem predprocesiranja podataka i ručnog definiranja značajki samo jedne razine apstrakcije. Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova za red veličine veća brzina, no brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju. 
 
