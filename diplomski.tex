@@ -30,7 +30,7 @@ U strojnom učenju se u zadnjih nekoliko godina pojavilo novo obečavajuće podr
 
 U ovom radu provedeno je istraživanje primjene dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. U tu svrhu razvijen je sustav za učenje i testiranje različitih arhitektura standarnih neuronskih mreža te dubokih konvolucijskih neuronskih mreža. Podsustav za učenje implementiran je pomoću razvojnog alata za paralelno računanje na grafičkoj kartici kako bi postupak bio što brži. Dio sustava za testiranje razvijen je s ciljem detaljne analize rada naučenih modela, te jednostavne i pregledne usporedbe više različitih modela. 
 
-Istraživanje je ostvareno uz dodatnu podršku tvrtke MicroBlink specijalizirane za razvoj tehnologija računalnog vida za mobilne uređaje. Za učenje i testiranje modela koriste se od tvrtke interni skupovi podataka, a prilikom testiranja provodi se analiza i njihovog internog klasifikatora. 
+Istraživanje je ostvareno uz dodatnu podršku tvrtke Microblink specijalizirane za razvoj tehnologija računalnog vida za mobilne uređaje. Za učenje i testiranje modela koriste se od tvrtke interni skupovi podataka, a prilikom testiranja provodi se analiza i njihovog internog klasifikatora. 
 Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju. Pritom je osim točnosti naučenih klasifikatora uzeta u obzir i njihova kompleksnost te prosječno trajanje klasifikacije.
 
 
@@ -221,7 +221,7 @@ Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenj
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=11cm]{slike/max_pooling.jpeg}
-\caption{Primjer lokalnog udruživanja na 10 mapi značajki}
+\caption{Primjer lokalnog udruživanja na 10 mapa značajki}
 \end{figure}
 
 
@@ -259,7 +259,9 @@ Odabir arhitekture dubokih konvolucijskih mreža dodatno je otežan u odnosu na 
 
 \chapter{Implementacija}
 
-U sklopu ovog rada razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža. Prilikom razvijanja takvog sustava bilo je važno zadovoljiti dva glavna uvjeta: brzo učenje novih arhitektura na velikoj količini podataka te detaljna analiza rada naučenih mreža. Iz tog razloga sustav je podijeljen na dva podsustava razvijena sa zasebnim alatima. Podsustav zadužen za učenje implementiran je u razvojnom alatu Torch koji omogućuje paralelno izvođenje procesa učenja na grafičkoj kartici. Podsustav koji provodi analizu rada naučenih mreža implementiran je u jeziku C++ korištenjem OpenCV biblioteke.
+U sklopu ovog rada razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža. Prilikom razvijanja takvog sustava bilo je važno zadovoljiti dva glavna uvjeta: brzo učenje kompleksnih arhitektura na velikoj količini podataka te detaljna analiza rada naučenih mreža. Iz tog razloga sustav je podijeljen na dva podsustava razvijena sa zasebnim alatima. Podsustav zadužen za učenje implementiran je u razvojnom alatu Torch koji omogućuje paralelno izvođenje procesa učenja na grafičkoj kartici \cite{collobert2011torch}. Podsustav koji provodi analizu rada naučenih mreža implementiran je u jeziku C++ korištenjem OpenCV biblioteke \cite{bradski2000opencv}, a za pokretanje Torch modela u tom okruženju koristi se C++ biblioteka JTorch koju je razvio Jonathan Tompson \cite{tompson2013jtorch}.
+
+Kako bi se dobio dodatni uvid u rad naučenih neuronskih mreža napravljena je prilagodba C++ implementacije Torch modela OCR sustavu tvrtke Microblink. Time je omogućeno korištenje naučenih modela kao klasifikatora u Microblink mobilnim aplikacijama te dodatna analiza primjenom na mobilnom uređaju.
 
 \section{Sustav za učenje}
 
@@ -268,36 +270,36 @@ Osim brzine učenja, važna je i jednostavnost definiranja parametara mreže koj
 
 \subsection{Torch razvojni alat}
 
-Prilikom odabira razvojnog alata uzeti su u obzir i alati Caffe i Theano. Možda najpopularniji alat za duboko učenje Caffe ima izrazito jednostavno sučelje za odabir parametara mreže i procesa učenja, no kao posljedica toga teško je raditi promjene u postojećoj implementaciji u svrhu istraživanja ili razvoja. Theano s druge strane pruža puno manju razinu apstrakcije te ostavlja mogućnost lake izmjene većine implementacije, no postaje nepraktičan kod česte upotrebe standarnih algoritama.
+Prilikom odabira razvojnog alata uzeti su u obzir i alati Caffe i Theano \cite{jia2014caffe}\cite{bergstra2010theano}. Možda najpopularniji alat za duboko učenje Caffe ima izrazito jednostavno sučelje za odabir parametara mreže i procesa učenja, no kao posljedica toga teško je raditi promjene u postojećoj implementaciji u svrhu istraživanja ili razvoja. Theano s druge strane pruža puno manju razinu apstrakcije te ostavlja mogućnost lake izmjene većine implementacije, no postaje nepraktičan kod česte upotrebe standarnih algoritama.
 Torch je po razini apstrakcije negdje između prethodno navedenih alata, dovoljno je niske apstrakcije za laku izmjenu implementacije kod razvoja i istraživanja, ali ima i sučelje za standarne algoritme koje ga čini praktičnim. 
 
-Brzina samog izvođenja procesa učenja na grafičkim karticama velikim dijelom ovisi o pozadinskoj implementaciji paralelnog računanja koja je za sve navedene alate otprilike podjednako brza, te se toliko često mijenja da nema smisla uspoređivati njihove brzine. S druge strane, važan faktor kod odabira alata je podrška akademske zajednice i industrije s obzirom da o tome ovisi koliko brzo se razvijaju implementacije novih koncepata. Torch ima implementaciju za većinu novih koncepata u dubokom učenju zbog podrške kompanija kao što su Google, Facebook i Twitter.  Tako je primjerice implementirana relativno nova metoda Dropout za regularizaciju prilikom učenja mreže te ReLU funkcija prijelaza koja je pokazale bolje rezultate od standardne sigmoidalne funkcije u nedavnim istraživanjima.
+Brzina samog izvođenja procesa učenja na grafičkim karticama velikim dijelom ovisi o pozadinskoj implementaciji paralelnog računanja koja je za sve navedene alate otprilike podjednako brza, te se toliko često mijenja da nema smisla uspoređivati njihove brzine. S druge strane, važan faktor kod odabira alata je podrška akademske zajednice i industrije s obzirom da o tome ovisi koliko brzo se razvijaju implementacije novih koncepata. Torch ima implementaciju za većinu novih koncepata u dubokom učenju zbog podrške kompanija kao što su Google, Facebook i Twitter.  Tako je primjerice implementirana relativno nova metoda izbacivanja \engl{Dropout}\cite{hinton2014dropout} za regularizaciju prilikom učenja mreže te ispravljena linearna jedinica \engl{Rectified Linear Unit - ReLU}, funkcija prijelaza koja je pokazale bolje rezultate od standardne sigmoidalne funkcije u nedavnim istraživanjima.
 
 Sama implementacija Torcha podijeljena je na dva dijela. Sve računske operacije na grafičkoj kartici napisane su kao C/CUDA implementacija za maksimalnu brzinu, dok je ostatak funkcionalnosti implementiran u skriptnom jeziku LuaJIT za lakše korištenje alata.  
 
 \subsection{Definiranje arhitekture}
 	
 Neuronska mreža je u Torch alatu definirana kao model koji se sastoji od sekvencijalno povezanih slojeva koji vrše različite računske operacije.
-Tako bi na primjer standarna neuronska mreža s jednim skrivenim slojem bila definirana kao sekvencijalni niz prikazan na Slici ???. 
+Tako je na primjer standarna dvoslojna neuronska mreža definirana kao sekvencijalni niz koji prvo linearno množi ulazni vektor sa težinama prvog sloja, zatim primjenjuje prijenosnu sigmoidalnu funkciju na svim elementima prvog sloja, te konačno linearno množi vektor elemenata prvog sloja sa težinama drugog sloja kako bi se dobile izlazne vrijednosti mreže. Jedan takav Torch model prikazan je na Slici \ref{fig:nnmodel}.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=9cm]{slike/nn_model.png}
-\caption{}
+\includegraphics[width=10cm]{slike/nn_model.png}
+\caption{Definiranje Torch modela dvoslojne neuronske mreže}
+\label{fig:nnmodel}
 \end{figure}
+\FloatBarrier
 
-Primjer duboke konvolucijske mreže definirane kao Torch model prikazan je na Slici ???.
+Za definiranje duboke konvolucijske mreže u Torchu potrebno je dodatno koristiti slojeve za prostornu konvoluciju, maksimalno lokalno udruživanje i ispravljene linearne jedinice. Primjer definiranja jednog dubokog konvolucijskog modela prikazan je na Slici \ref{fig:cnnmodel}.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=16cm]{slike/cnn_model.png}
-\caption{}
+\caption{Definiranje Torch modela duboke konvolucijske neuronske mreže}
+\label{fig:cnnmodel}
 \end{figure}
 
-\subsection{Definiranje parametara učenja}
-
-
-
+\newpage
 
 \section{Sustav za testiranje}
 
@@ -306,22 +308,25 @@ Detaljna analiza rada naučenih mreža ključna je za pronalaženje optimalne ar
 \subsection{Matrica greške klasifikacije}
 
 Testiranjem klasifikatora na skupu podataka u konačnici se dobivaju dvije oznake klasa za svaki podatak. Jedna oznaka je ručno određena te uvijek predstavlja točnu klasu podatka, dok drugu dobivamo kao rezultat klasifikatora koji se testira. Standarna mjera točnosti klasifikatora koristi se dobivenim oznakama samo za informaciju o tome da li oznaka klasifikatora odgovara označenoj oznaci, te vraća kao informaciju ukupni postotak točno klasificiranih podataka. Promatranjem klasa oznaka koje klasifikator vraća u slučaju krive klasifikacije može se dobiti bolji uvid u rad analiziranog modela. 
-Matrica greške klasifikacije definirana je redovima koji predstavljaju ručne oznake klasa, te stupcima koji predstavljaju oznake dobivene klasifikatorom. Matrica se generira brojanjem uređenih parova ručne oznake i oznake klasifikatora, odnosno tražene i dobivene oznake. Tako bi na primjer potpuno točan klasifikator generirao matricu sa vrijednostima nula na svim mjestima osim na glavnoj dijagonali matrice gdje su tražene i dobivene oznake jednake.
-Ovakav prikaz greške klasifikacije omogućuje uvid u točnost klasifikatora za pojedine klase, kao i informaciju o klasama koje se često međusobno zamjenjuju.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=13cm]{slike/confusion_matrix.jpg}
-\caption{}
+\includegraphics[width=12cm]{slike/confusion_matrix.jpg}
+\caption{Primjer matrice greške klasifikacije}
 \end{figure}
+
+Matrica greške klasifikacije definirana je redovima koji predstavljaju ručne oznake klasa, te stupcima koji predstavljaju oznake dobivene klasifikatorom. Matrica se generira brojanjem uređenih parova ručne oznake i oznake klasifikatora, odnosno tražene i dobivene oznake. Tako bi na primjer potpuno točan klasifikator generirao matricu sa vrijednostima nula na svim mjestima osim na glavnoj dijagonali matrice gdje su tražene i dobivene oznake jednake.
+Ovakav prikaz greške klasifikacije omogućuje uvid u točnost klasifikatora za pojedine klase, kao i informaciju o klasama koje se često međusobno zamjenjuju.
+
+
 
 \subsection{Prosječno trajanje klasifikacije}
 
-Kako bi se donio zaključak o primjenjivosti nekog modela potrebno je poznavati i mjeru njegove kompleksnosti. Sustav za testiranje računa za svaku arhitekturu ukupan broj računskih operacija potrebnih za klasifikaciju jednog podatka. Kod standarnih potpuno povezanih mreža taj broj odgovara ukupnom broju veza između neurona, dok se kod kovolucijskih arhitektura uzimaju u obzir veličine filtera i mjere njihovog preklapanja. 
+Kako bi se donio zaključak o primjenjivosti nekog modela potrebno je poznavati i mjeru njegove kompleksnosti. Sustav za testiranje računa za svaku arhitekturu ukupan broj računskih operacija potrebnih za klasifikaciju jedne slike. Kod standarnih potpuno povezanih mreža taj broj odgovara ukupnom broju veza između neurona, dok se kod kovolucijskih arhitektura prilikom računanja tog broja moraju uzeti u obzir veličine filtera i mjere njihovog preklapanja. 
 
-Kompleksnost modela se može definirati i brojem slobodnih parametara, koji je kod potpuno povezanih mreža jednak broju računskih operacija. Kod dubokih konvolucijskih arhitektura taj je broj manji od broja računskih operacija zbog ranije opisane metode dijeljenja težina lokalnih filtera, te se koristi za procjenu sposobnosti generalizacije klasifikatora.
+Kompleksnost modela se može definirati i brojem slobodnih parametara, koji se koristi i za procjenu sposobnosti generalizacije klasifikatora. Kod potpuno povezanih mreža broj slobodnih parametara jednak je broju računskih operacija. Kod dubokih konvolucijskih arhitektura taj je broj manji od broja računskih operacija zbog ranije opisane metode dijeljenja težina lokalnih filtera. 
 
-Iako se pomoću broja računskih operacija može aproksimirati prosječno trajanje klasifikacije, sustav za testiranje provodi i empirijsko mjerenje. Testiranjem klasifikatora na skupu podataka bilježi se trajanje svake klasifikacije, što nam između ostalog omogućuje i računanje prosječnog trajanja klasifikacije.
+Iako se pomoću broja računskih operacija može aproksimirati prosječno trajanje klasifikacije, sustav za testiranje provodi i empirijsko mjerenje. Testiranjem klasifikatora na skupu podataka bilježi se vrijeme potrebno da klasifikator odredi ulaznoj slici oznaku, što nam omogućuje računanje prosječnog trajanja klasifikacije.
 
 \subsection{Simultano analiziranje više modela}
 
@@ -331,34 +336,33 @@ Kako bi rezultati bili što pregledniji, nakon analize svih modela generiraju se
 
 Kod problema klasifikacije slika analizu znatno olakšava mogućnost vizualne provjere podataka. Vrlo često se može donijeti neki zaključak o slabostima klasifikatora promatranjem slika krivo klasificiranih primjera. Sustav za testiranje sprema za svaki analizirani model krivo klasificirane slike u zasebne datoteke ovisno o krivo određenoj klasi.
 
+\section{Prilagodba Microblink OCR sustavu}
 
+Istraživanje u ovom radu ostvareno je uz dodatnu podršku tvrtke Microblink koja razvija rješenja za mobilne uređaje u području računalnog vida. Njihovo rješenje sastoji se od vlastitog OCR sustava optimiziranog za rad na mobilnom uređaju, te implementacija raznih mobilnih aplikacija koje primjenjuju taj sustav. Neke od implementacija su aplikacije za plaćanje računa, izvlačenja informacija iz osobnih dokumenata, pa čak i rješavanje matematičkih jednadžbi. 
 
+Microblink OCR sustav sastoji se od dva glavna dijela, podsustava za segmentaciju znakova sa slike, te podsustava za klasifikaciju tih znakova. U ovom radu analizirani su modeli neuronskih mreža za klasifikaciju znakova, te su ulazni skupovi podataka već segmentirani znakovi iz slike. Stoga kako bi se naučeni modeli mogli pokretati na mobilnom uređaju napravljena je prilagodba C++ implementacije Torch modela sučelju Microblink podsustava za klasifikaciju.
 
+Sa implementiranom prilagodbom Microblink sustavu moguće je koristiti bilo koji naučeni Torch model kao klasifikator u bilo kojoj Microblink mobilnoj aplikaciji. Time je omogućena dodatna analiza rada modela iz njegove izravne primjene na mobilnom uređaju. Korištenjem aplikacija može se dobiti uvid u točnost i brzinu klasifikacije u raznim uvjetima i na različitim mobilnim uređajima.  
 
 
 \chapter{Rezultati}
 
 Cilj ovog rada bio je analizirati rad dubokih konvolucijskih mreža na problemu raspoznavanja znakova te ih usporediti sa standarnim neuronskim mrežama. Modeli su učeni i testirani na internim skupovima podataka tvrtke Microblink, a prilikom testiranja provedena je analiza i njihovog internog klasifikatora. 
 
-Istraživanje je provedeno na problemu raspoznavanju znakova na osobnim iskaznicama, takozvanim MRZ podatcima. MRZ podatci imaju 37 klasa znakova fonta ocrb, te obuhvaćaju znamenke, velika slova te znak manje. U ovom radu koriste se dva skupa takvih podataka za učenje i testiranje klasifikatora. Prvi skup se zove sintetizirani skup, a dobiven je slikanjem printanih imitacija osobnih iskaznica. Sastoji se od 450 tisuća označenih slika znakova te je slikan sa više različitih modela mobitela u raznim uvjetima osvijetljenja. Drugi skup dobiven je slikanjem pravih osobnih iskaznica u različitim uvjetima, te sadrži oko 12 tisuća ručno označenih slika znakova. Za potrebe učenja i testiranja sintetizirani skup je podijeljen na 300 tisuća slika za učenje i 150 tisuća za testiranje modela, a ručno označeni skup koristi se za dodatno testiranje sposobnosti generalizacije modela.
+Istraživanje je provedeno na problemu raspoznavanja znakova na osobnim iskaznicama, takozvanim strojno čitljivim područjima \engl{Machine Readable Zone - MRZ}. MRZ podatci imaju 37 klasa znakova fonta ocrb, te obuhvaćaju znamenke, velika slova i znak manje. U ovom radu koriste se dva skupa takvih podataka za učenje i testiranje klasifikatora. Prvi skup zove se sintetizirani skup, a dobiven je slikanjem printanih imitacija osobnih iskaznica. Sastoji se od 450 tisuća označenih slika znakova te je slikan sa više različitih modela mobitela u raznim uvjetima osvijetljenja. Drugi skup dobiven je slikanjem pravih osobnih iskaznica u različitim uvjetima, te sadrži oko 12 tisuća ručno označenih slika znakova. Za potrebe učenja i testiranja sintetizirani skup je podijeljen na 300 tisuća slika za učenje i 150 tisuća za testiranje modela, a ručno označeni skup koristi se za dodatno testiranje sposobnosti generalizacije modela.
 
 
 
 \section{Utjecaj predprocesiranja podataka}
 
 
-U ranijim poglavljima spomenuta je standarna praksa predprocesiranja slika znakova prije njihovog klasificiranja. Promjenjivi uvjeti okoline rezultiraju raznim transformacijama originalne slike koje otežavaju njenu klasifikaciju, stoga je logično primjenjivati metode ublažavanja posljedica tih transformacija. Takve metode najčešće su neki oblik operacije binarizacije, različite po načinu na koji se definira njihov prag. Jedna takva metoda koja uzima u obzir lokalne promjene osvijetljenja je metoda adaptivnog praga opisana ranije u radu.
+U ranijim poglavljima spomenuta je uobičajena praksa predprocesiranja slika znakova prije njihovog klasificiranja. Promjenjivi uvjeti okoline rezultiraju raznim transformacijama originalne slike koje otežavaju njenu klasifikaciju, stoga je logično primjenjivati metode ublažavanja posljedica tih transformacija. Takve metode najčešće su neki oblik operacije binarizacije, različite po načinu na koji se definira njihov prag. Jedna takva metoda koja uzima u obzir lokalne promjene osvijetljenja je metoda adaptivnog praga opisana ranije u radu.
 
-Metode predprocesiranja razvijene su sa ciljem naglašavanja korisnih informacija, te odbacivanjem onih nepotrebnih. Mana ovog pristupa je što se odluka o korisnosti informacija donosi pomoću ručno razvijenih metoda zasnovanih na ljudskom promatranju podataka, te dolazi do gubitka korisnih informacija koje čovjek nije u stanju vidjeti. Kako bi se koristile sve informacije iz podataka, potrebne su metode koje pronalaze korisne informacije izravno iz skupa podataka. Takve metode razvijaju se u području dubokog učenja gdje se na temelju skupa podataka uči cijela hijerarhija značajki i klasifikator u jednom procesu učenja. Posljedice promjenjivih uvjeta okoline se tada rješavaju na način da se procesom učenja na velikoj količini različitih oblika podataka razvije kvalitetna hijerarhija značajki otporna na nastale transformacije.
+Metode predprocesiranja razvijene su sa ciljem naglašavanja korisnih informacija, te odbacivanjem onih nepotrebnih. Mana ovog pristupa je što se odluka o korisnosti informacija donosi pomoću ručno razvijenih metoda zasnovanih na ljudskom promatranju podataka, zbog čega dolazi do gubitka korisnih informacija koje čovjek nije u stanju vidjeti. Kako bi se koristile sve informacije iz podataka, potrebne su metode koje pronalaze korisne informacije izravno iz skupa podataka. Takve metode razvijaju se u području dubokog učenja gdje se na temelju skupa podataka uči cijela hijerarhija značajki i klasifikator u jednom procesu učenja. Posljedice promjenjivih uvjeta okoline se tada rješavaju na način da se procesom učenja na velikoj količini različitih oblika podataka razvije kvalitetna hijerarhija značajki otporna na nastale transformacije.
 
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=13cm]{slike/preprocessing_comparison.png}
-\caption{}
-\end{figure}
-
-U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesiranja podataka na točnost klasifikatora. Korištena je duboka konvolucijska mreža sa 10 mapi značajki u prvom i 20 mapi značajki u drugom konvolucijskom sloju. Testiranje je provedeno na slikama dimenzija 18 piksela u 3 različita oblika: predprocesiranim metodom adaptivnog praga, predprocesiranim internom metodom tvrtke Microblink, te originalnim slikama bez predprocesiranja. Rezultati prikazani u tablici ??? potvrdili su prednost metoda naučenih na skupu podataka.    
-
+U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesiranja podataka na točnost klasifikatora. Korištena je duboka konvolucijska mreža sa 10 mapa značajki u prvom i 20 mapa značajki u drugom konvolucijskom sloju. Testiranje je provedeno na slikama dimenzija 18 piksela u 3 različita oblika: predprocesiranim metodom adaptivnog praga, predprocesiranim internom metodom tvrtke Microblink, te originalnim slikama bez predprocesiranja.
+ 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -370,24 +374,39 @@ U ovom radu provedeno je istraživanje kako bi se analizirao utjecaj predprocesi
     \hline
     \end{tabular}
 \end{center}
-\caption{}
+\caption{Rezultati istraživanja utjecaja predprocesiranja podataka}
+\label{tab:preproc}
 \end{table}
+
+Dobiveni rezultati su općenito lošiji za ručno označeni testni skup, što je logično s obzirom da su mreže učene na sintetiziranom skupu koji je dobiven slikanjem printanih imitacija osobnih iskaznica. Rezultati mreže učene na originalnim podacima bez predprocesiranja pokazuju da mreža dobro generalizira s obzirom da su postotci točnosti klasifikacija na oba testna skupa vrlo visoki. Interna metoda tvrtke Microblink pokazala je lošije rezultate na oba testna skupa, no bolje od metode adaptivnog praga koja je vrlo loše generalizirala na ručnom testnom skupu.   
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=13cm]{slike/preprocessing_comparison.png}
+\caption{Primjer predprocesiranja slike adaptivnim pragom i Microblink metodom}
+\label{fig:preproc}
+\end{figure}
+
+Analizom krivo klasificiranih primjera za mreže koje se koriste predprocesiranim podatcima može se dobiti bolji uvid u probleme ovog pristupa. Jedan takav primjer može se vidjeti na Slici \ref{fig:preproc}. Prikazana je originalna slika slova 'B' lijevo, slika dobivena predprocesiranjem adaptivnim pragom u sredini, te rezultat primjene Microblink metode predprocesiranja desno. Veliki broj krivo klasificiranih slika za mreže sa predprocesiranim podatcima rezultat je zamjene slova 'B' i znamenke '8'. Za razlikovanje ove dvije klase jedna dobro naučena mreža koristiti će se razlikom u zaobljenosti njihovih znakova. Na Slici \ref{fig:preproc} može se vidjeti da metode predprocesiranja binariziranjem krivo označavaju neke dijelove slike, čime znak poprima zaobljenost karakterističnu za znamenku '8'.
+
+
 
 
 \section{Pronalaženje optimalne arhitekture mreže}
 
 Glavna mjera kvalitete naučenog modela je njegova sposobnost generalizacije, odnosno koliko dobro klasificira dotad neviđene primjere. Odabir prave arhitekture modela ključan je za dobru generalizaciju, stoga je u ovom radu proveden postupak pronalaženja optimalne arhitekture. Ovaj postupak se još naziva i selekcija modela, a zasniva se na testiranju više arhitektura različitih kompleksnosti. Prilikom odabira optimalne arhitekture postupno se povećava kompleksnost modela, te se promatra njegova točnost na skupovima podataka za testiranje. 
 
-Selekcija modela napravljena je za standarne neuronske mreže i duboke konvolucijske mreže kako bi se u konačnici mogli usporediti rezultati njihovih najboljih arhitektura.
+Selekcija modela napravljena je za standarne neuronske mreže i duboke konvolucijske neuronske mreže kako bi se u konačnici mogli usporediti rezultati njihovih najboljih arhitektura.
 
 \subsection{Standarne neuronske mreže}
 
-Dodavanje slojeva neuronskoj mreži u teoriji omogućuje razvijanje hijerarhije značajki koja robusnije predstavlja objekt detekcije. U svrhu što boljeg razumijevanja utjecaja dubine arhitekture i njenog tipa (standarni ili konvolucijski) na uspješnost klasifikacije,  provedeno je istraživanje i nad dubokim standarnim neuronskim mrežama. Analiziran je rad 5 arhitektura različitih dubina, od plitke dvoslojne mreže do duboke mreže sa šest slojeva, te su prikazani rezultati uzlazno s obzirom na njihovu kompleksnost na Slici ???. 
+Dodavanje slojeva neuronskoj mreži u teoriji omogućuje razvijanje hijerarhije značajki koja robusnije predstavlja objekt klasifikacije. U svrhu što boljeg razumijevanja utjecaja dubine arhitekture i njenog tipa (standarni ili konvolucijski) na uspješnost klasifikacije,  provedeno je istraživanje i nad dubokim standarnim neuronskim mrežama. Analiziran je rad 5 arhitektura različitih dubina, od plitke dvoslojne mreže do duboke mreže sa šest slojeva. Rezultati su prikazani uzlazno s obzirom na njihovu kompleksnost na Slici \ref{graf:nncomplex}. 
 
 \begin{figure}[ht!]
 \begin{center}
     \input{grafovi/nn_complexity}
-    \caption{}
+    \caption{Usporedba 5 arhitektura neuronskih mreža različitih dubina}
+\label{graf:nncomplex}
 \end{center}
 \end{figure}
 
@@ -397,23 +416,25 @@ Utjecaj dubine arhitekture, odnosno broja slojeva mreže, nije vidljiv na rezult
 
 \subsection{Konvolucijske neuronske mreže}
 
-Kod definiranja arhitekture konvolucijskih mreža postoje određena ograničenja prilikom odabira njenih parametara. S obzirom da se ulazna slika postepeno smanjuje u dimenzijama zbog primjene konvolucijske jezgre i lokalnog udruživanja, broj slojeva mreže je ograničen. U ovom radu koriste se relativno male ulazne slike dimenzija 18 piksela te lokalni filteri dimenzija 3 piksela, stoga mreže mogu imati najviše dva konvolucijska sloja. Analizirano je 7 arhitektura sa različitim brojem mapi značajki u svakom konvolucijskom sloju, te su prikazani rezultati uzlazno s obzirom na njihovu kompleksnost na Slici ???.
+Kod definiranja arhitekture konvolucijskih mreža postoje određena ograničenja prilikom odabira njenih parametara. S obzirom da se ulazna slika postepeno smanjuje u dimenzijama zbog primjene konvolucijske jezgre i lokalnog udruživanja, broj slojeva mreže je ograničen. U ovom radu koriste se relativno male ulazne slike dimenzija 18 piksela te lokalni filteri dimenzija 3 piksela, stoga mreže mogu imati najviše dva konvolucijska sloja. Analizirano je 7 arhitektura sa različitim brojem mapa značajki u svakom konvolucijskom sloju, te su prikazani rezultati s obzirom na njihovu kompleksnost na Slici \ref{graf:cnncomplex}.
 
 \begin{figure}[ht!]
 \begin{center}
     \input{grafovi/cnn_complexity}
-    \caption{}
+    \caption{Usporedba 7 dubokih konvolucijskih arhitektura različitih kompleksnosti}
+    \label{graf:cnncomplex}
 \end{center}
 \end{figure}
 
-Kao i kod analize standarnih neuronskih mreža rezultati na sintetiziranom testnom skupu bolji su od onih na ručno označenom skupu, no za određene arhitekture ta je razlika mala. Na prikazu rezultata vidljiva je standarna krivulja generalizacije za oba testna skupa. Točnost klasifikacije je mala za nedovoljno kompleksne modele jer njihova arhitektura nema dovoljno slobodnih parametara da bi kvalitetno opisala podatke hijerarhijom značajki. Za previše kompleksne modele je točnost na testnim skupovima također manja zbog previše slobodnih parametara koji omogućuju pretjeranu prilagođenost modela podatcima za učenje. Analizom je pronađena optimalna arhitektura sa 10 mapi značajki u prvom konvolucijskom sloju te 20 mapi značajki u drugom konvolucijskom sloju. Rezultati modela sa optimalnom arhitekturom pokazuju dobru sposobnost generalizacije na oba testna skupa.
+Kao i kod analize standarnih neuronskih mreža rezultati na sintetiziranom testnom skupu bolji su od onih na ručno označenom skupu, no za određene arhitekture ta je razlika vrlo mala. Na prikazu rezultata vidljiva je standarna krivulja generalizacije za oba testna skupa. Točnost klasifikacije je mala za nedovoljno kompleksne modele jer njihova arhitektura nema dovoljno slobodnih parametara da bi kvalitetno opisala podatke hijerarhijom značajki. Za pretjerano kompleksne modele je točnost na testnim skupovima također manja zbog previše slobodnih parametara koji omogućuju pretjeranu prilagođenost modela podatcima za učenje. Analizom je pronađena optimalna arhitektura sa 10 mapa značajki u prvom konvolucijskom sloju te 20 mapa značajki u drugom konvolucijskom sloju. Rezultati modela sa optimalnom arhitekturom pokazuju dobru sposobnost generalizacije na oba testna skupa.
 
 \section{Usporedba optimalnih arhitektura}
 
 Usporedbom najboljih predstavnika standarnih i konvolucijskih neuronskih mreža moguće je dobiti uvid u utjecaje različitih tipova arhitektura. Analizom standarnih mreža pokazano je da se dodavanjem dubine plitkoj dvoslojnoj mreži povećava njena sposobnost generalizacije. Optimalna konvolucijska arhitektura također je duboka, stoga dobiveni rezultati upućuju na prednost dubokih arhitektura nad plitkima. 
 
-U tablici ??? prikazana je usporedba rezultata dva optimalna modela na oba testna skupa. Točnost klasifikacije na sintetiziranom skupu približno je jednaka za oba modela, no na ručno označenom skupu rezultati su bolji kod konvolucijskog modela. Rezultati upućuju na to da konvolucijska arhitektura mreže poboljšava sposobnost generalizacije modela.  
+U Tablici \ref{tab:standconv} prikazana je usporedba rezultata dva optimalna modela na oba testna skupa. Točnost klasifikacije na sintetiziranom skupu približno je jednaka za oba modela, no na ručno označenom skupu rezultati su bolji kod konvolucijskog modela. Rezultati upućuju na to da konvolucijska arhitektura mreže poboljšava sposobnost generalizacije modela.  
 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -425,11 +446,13 @@ U tablici ??? prikazana je usporedba rezultata dva optimalna modela na oba testn
     \hline
     \end{tabular}
 \end{center}
-\caption{}
+\caption{Usporedba standarnih i konvolucijskih arhitektura}
+\label{tab:standconv}
 \end{table}
 
-Analizom točnosti klasifikacije za svaku zasebnu klasu te promatranjem krivo klasificiranih primjera mogu se točno vidjeti slučajevi koji standarnoj neuronskoj mreži predstavljaju problem a konvolucijska neuronska mreža uspijeva točno klasificirati. U tablici  ??? prikazana je usporedba postotka točnosti klasifikacije za takve slučajeve. Jedan takav slučaj je sličnost između znamenke '0' i slova 'O' koji se razlikuju samo po zaobljenosti konture. Rezultati upućuju na to da lokalni filteri konvolucijskih mreža mogu robusnije predstaviti zaobljene konture i time doprinjeti robusnosti algoritma prilikom razlikovanja ovih klasa. Također problematičan slučaj predstavlja razlikovanje slova 'B' od znamenke '8'. Optimalni model standarne neuronske mreže velik broj slova 'B' krivo je klasificirao kao znamenku '8', dok je konvolucijska mreža imala vrlo visok postotak točnosti klasifikacije.
+Analizom točnosti klasifikacije za svaku zasebnu klasu te promatranjem krivo klasificiranih primjera mogu se točno vidjeti slučajevi koji standarnoj neuronskoj mreži predstavljaju problem, a koje konvolucijska neuronska mreža uspijeva točno klasificirati. U Tablici  \ref{tab:hardexample} prikazana je usporedba postotka točnosti klasifikacije za takve slučajeve. Jedan takav slučaj je sličnost između znamenke '0' i slova 'O' koji se razlikuju samo po zaobljenosti konture. Rezultati upućuju na to da lokalni filteri konvolucijskih mreža mogu robusnije predstaviti zaobljene konture i time doprinjeti robusnosti algoritma prilikom razlikovanja ovih klasa. Također problematičan slučaj predstavlja razlikovanje slova 'B' od znamenke '8'. Optimalni model standarne neuronske mreže velik broj slova 'B' krivo je klasificirao kao znamenku '8', dok je konvolucijska mreža imala vrlo visok postotak točnosti klasifikacije za obadvije klase.
 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -441,11 +464,13 @@ Analizom točnosti klasifikacije za svaku zasebnu klasu te promatranjem krivo kl
     \hline
     \end{tabular}
 \end{center}
-\caption{}
+\caption{Usporedba arhitektura na teškim slučajevima}
+\label{tab:hardexample}
 \end{table}
 
 Osim točnosti naučenih klasifikatora prilikom analize uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije. Kao što je ranije spomenuto, kompleksnost modela može se aproksimirati preko broja računskih operacija potrebnih za klasifikaciju jedne slike, ili preko broja slobodnih parametara, odnosno broja težina koje se mogu mijenjati prilikom učenja mreže.  
 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -458,17 +483,19 @@ Osim točnosti naučenih klasifikatora prilikom analize uzeta je u obzir i njiho
     \hline
     \end{tabular}
 \end{center}
-\caption{}
+\caption{Usporedba svojstava kompleksnosti arhitektura}
+\label{tab:complexity}
 \end{table}
 
-U tablici ??? prikazana je usporedba navedenih svojstava za oba optimalna modela. Po broju računskih operacija standarni model gotovo je dvostruko kompleksniji, no prosječno trajanje klasifikacije približno je jednako za oba modela. Razlog tome je što se proječno trajanje klasifikacije računa empirijski te ovisi o implementaciji svih računskih operacija, koje u ovom slučaju traju dulje kod konvolucijskih mreža. 
+U tablici \ref{tab:complexity} prikazana je usporedba navedenih svojstava za oba optimalna modela. Po broju računskih operacija standarni model gotovo je dvostruko kompleksniji, no prosječno trajanje klasifikacije približno je jednako za oba modela. Razlog tome je što se proječno trajanje klasifikacije računa empirijski te ovisi o implementaciji svih računskih operacija, koje u ovom slučaju traju dulje kod konvolucijskih mreža. 
 
 Važno je primjetiti da konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture. Manji broj slobodnih parametara izravna je posljedica dodatnih ograničenja koja mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. Ovo svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
 
 \section{Usporedba sa Microblink klasifikatorom}
 
-Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena je i analiza internog klasifikatora tvrtke Microblink. Radi se o klasifikatoru razvijenom po klasičnim principima rješavanja problema raspoznavanja znakova gdje se klasifikacija provodi u tri glavna koraka. Prvi korak je predprocesiranje ulazne slike gdje se nastoji ublažiti transformacije nastale promjenjivim uvjetima okoline. Idući korak je računanje diskriminantnih značajki ulazne slike kako bi se dodatno olakšao problem klasifikacije, te je konačni korak primjena algoritma klasifikacije na značajke slike.
+Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena je i analiza internog klasifikatora tvrtke Microblink. Radi se o klasifikatoru razvijenom po klasičnim principima rješavanja problema raspoznavanja znakova gdje se klasifikacija provodi u tri glavna koraka. Prvi korak je predprocesiranje ulazne slike gdje se nastoji ublažiti transformacije nastale promjenjivim uvjetima okoline. Idući korak je računanje diskriminantnih značajki ulazne slike kako bi se dodatno olakšao problem klasifikacije, te je konačni korak primjena algoritma klasifikacije na značajkama slike.
 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -481,12 +508,14 @@ Osim analize raznih arhitektura neuronskih mreža, u sklopu ovog rada provedena 
     \hline
     \end{tabular}
 \end{center}
-\caption{}
+\caption{Usporedba Microblink klasifikatora sa optimalnim neuronskim mrežama}
+\label{tab:mbstandconv}
 \end{table}
 
-Usporedbom rezultata u tablici ??? može se vidjeti da interni klasifikator tvrtke Microblink daje lošije rezultate od standarnih i konvolucijskih neuronskih mreža.
+Usporedbom rezultata u Tablici \ref{tab:mbstandconv} može se vidjeti da interni klasifikator tvrtke Microblink daje lošije rezultate od standarnih i konvolucijskih neuronskih mreža.
 Postoji više faktora koji u teoriji objašnjavaju ovakve rezultate. Jedan problem je negativni utjecaj predprocesiranja podataka zbog nesavršenosti ručno razvijenih metoda obrade slike. Zbog gubitka informacija neke od slika postaju neprepoznatljive nakon algoritma za predprocesiranje, što čini točnu klasifikaciju nemogućom. Još jedan faktor koji otežava klasifikaciju težih primjera je nesavršenost ručno definiranih značajki slike koje se predaju klasifikatoru. Umjesto da se značajke uče na temelju skupa podataka kako bi se maksimizirala njihova diskriminantnost, one se ručno definiraju na temelju ljudskog promatranja podataka što dovodi do gubitka informacija. Te konačno, ovako razvijeni klasifikator ima samo jedan sloj asptrakcije što onemogućuje stvaranje hijerarhije značajki koje robusnije predstavljaju objekt klasifikacije i poboljšavaju točnost klasifikatora.
 
+\hspace{2em}
 \begin{table}[ht!]
 \begin{center}
 \centering
@@ -499,28 +528,29 @@ Postoji više faktora koji u teoriji objašnjavaju ovakve rezultate. Jedan probl
     \hline
     \end{tabular} 
 \end{center}
-\caption{}
+\caption{Usporedba prosječnog trajanja klasifikacije}
+\label{tab:avgduration}
 \end{table}
 
-Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova brzina. U tablici ??? može se vidjeti da je njegovo prosječno trajanje klasifikacije za red veličine manje od onog od neuronskih mreža. Brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju, no konačna brzina klasifikatora može se i dodatno smanjiti ukoliko se koriste u kombinaciji sa bržim Microblink klasifikatorom. 
+Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova brzina. U Tablici \ref{tab:avgduration} može se vidjeti da je njegovo prosječno trajanje klasifikacije za red veličine manje od onog od neuronskih mreža. Brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju, no konačna brzina klasifikatora može se i dodatno smanjiti ukoliko se koriste u kombinaciji sa bržim Microblink klasifikatorom. 
 
-\section{Poboljšanja}
+\section{Moguća poboljšanja}
  
 Kao i kod svakog pristupa, moguća su poboljšanja u točnosti i brzini izvođenja klasifikacije. U području dubokog učenja veliki je naglasak na učenju svakog koraka procesa klasifikacije na temelju podataka, stoga je dodatni naglasak na važnosti podataka za učenje. Predstavljene duboke konvolucijske arhitekture pokazale su se sposobnima graditi kvalitetne hijerarhije značajki na temelju podataka, no za to je prije svega potrebna velika količina kvalitetnih podataka koji dobro predstavljaju domenu problema. Stoga je za budući napredak prije svega potrebno prikupljanje što veće količine kvalitetnih podataka za učenje. 
 
-Najbolji rezultati u ovom radu postignuti su sa konvolucijskom arhitekturom vrlo male kompleksnosti, svega nekoliko tisuća slobodnih parametara. Dodatnim povećavanjem kompleksnosti smanjivala se sposobnost generalizacije modela, što upućuje na pretjeranu prilagodbu podatcima za učenje. Ograničavanje kompleksnosti klasifikatora kako bi se povećala sposobnost generalizacije standarni je pristup prilikom selekcije modela, no pretjerana potreba za ovim metodama upućuje na nedovoljno kvalitetne podatke za učenje. Za učenje se u ovom radu koristi sintetizirani skup podataka prikupljen nad imitacijama osobnih iskaznica i u kontroliranim uvjetima. Stoga je jedno od mogućih poboljšanja razvijanje kvalitetnijih imitacija kartica, te porađivanje na raznolikosti uvjeta prilikom slikanja.
+Najbolji rezultati u ovom radu postignuti su sa konvolucijskom arhitekturom vrlo male kompleksnosti, svega nekoliko tisuća slobodnih parametara. Dodatnim povećavanjem kompleksnosti smanjivala se sposobnost generalizacije modela, što upućuje na pretjeranu prilagodbu podatcima za učenje. Ograničavanje kompleksnosti klasifikatora kako bi se povećala sposobnost generalizacije standarni je pristup prilikom selekcije modela, no pretjerana potreba za ovim metodama upućuje na nedovoljno kvalitetne podatke za učenje. Za učenje se u ovom radu koristi sintetizirani skup podataka prikupljen nad imitacijama osobnih iskaznica i u kontroliranim uvjetima. Stoga je jedno od mogućih poboljšanja razvijanje kvalitetnijih imitacija kartica, te porađivanje na raznolikosti uvjeta prilikom njihovog slikanja.
 
-Naučeni duboki konvolucijski modeli tipično imaju vrlo malu brzinu izvođenja klasifikacije zbog njihove velike dubine i kompleknosti, što ih čini teže primjenjivima na problemima u stvarnom vremenu. U ovom radu optimalni modeli vrlo su male kompleknosti zbog ranije spomenutih razloga, te imaju dovoljno veliku brzinu izvođenja klasifikacije za primjenu u stvarnom vremenu. No poboljšavanjem kvalitete podataka za učenje moći će se iskoristiti potencijal kompleksnijih modela, što će za posljedicu imati problem izvođenja tih modela u stvarnom vremenu. Jedna metoda koja bi mogle poboljšati brzinu ovakvih modela je metoda Geoffreya Hintona pod nazivom distilacija. Ideja je koristiti izlaze naučenog velikog modela kao takozvane mekane oznake za svaku sliku prilikom učenja manjeg modela. Istraživanje je pokazalo da se sa mekanim oznakama prenosi dio informacija o podatcima koje je prikupio veliki model, što poboljšava konačnu točnost naučenog manjeg modela. Tako naučeni manji model može se koristiti u stvarnom vremenu zbog svoje manje kompleksnosti i time veće brzine izvođenja klasifikacije.   
+Naučeni duboki konvolucijski modeli tipično imaju vrlo malu brzinu izvođenja klasifikacije zbog njihove velike dubine i kompleknosti, što ih čini teže primjenjivima na problemima u stvarnom vremenu. U ovom radu optimalni modeli vrlo su male kompleknosti zbog ranije spomenutih razloga, te imaju dovoljno veliku brzinu izvođenja klasifikacije za primjenu u stvarnom vremenu. No poboljšavanjem kvalitete podataka za učenje moći će se iskoristiti potencijal kompleksnijih modela, što će za posljedicu imati problem izvođenja tih modela u stvarnom vremenu. Jedna metoda koja bi mogla poboljšati brzinu ovakvih modela je metoda Geoffreya Hintona pod nazivom distilacija \engl{Distillation}\cite{hinton2015distill}. Ideja je koristiti izlaze naučenog velikog modela kao takozvane mekane oznake za svaku sliku prilikom učenja manjeg modela. Istraživanje je pokazalo da se sa mekanim oznakama prenosi dio informacija o podatcima koje je prikupio veliki model, što poboljšava konačnu točnost naučenog manjeg modela. Tako naučeni manji model može se koristiti u stvarnom vremenu zbog svoje manje kompleksnosti i time veće brzine izvođenja klasifikacije.   
 
 
 
 \chapter{Zaključak}
 
-Prepoznavanje teksta sa slike ima vrlo široku primjenu u mnogim područjima ljudske djelatnosti. Razvijanjem mobilne tehnologije i njene primjene u svakodnevnom životu pojavljuju se nove izazovnije primjene optičkog prepoznavanja znakova. Algoritam za prepoznavanje znakova mora biti robustan na promjenjive uvjete okoline, ali i dovoljno brz za primjenu u stvarnom vremenu na mobilnim uređajima. 
+Prepoznavanje teksta sa slike ima vrlo široku primjenu u mnogim područjima ljudske djelatnosti. Razvijanjem mobilne tehnologije pojavljuju se nove izazovnije primjene optičkog prepoznavanja znakova. Algoritam za prepoznavanje znakova mora biti robustan na promjenjive uvjete okoline, ali i dovoljno brz za primjenu u stvarnom vremenu na mobilnim uređajima. 
 
-Duboko učenje je novo obečavajuće područje istraživanja inspirirano vizualnim korteksom mozga sisavca. Zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije, te je pokazalo jako dobre rezultate na problemima raspoznavanja uzoraka, posebice u području računalnog vida. Za problem klasifikacije na temelju slika razvijene su duboke konvolucijske neuronske mreže koje traže lokalne značajke na slici pomoću lokalnih filtera ostvarenih konvolucijom. 
+Duboko učenje je novo obečavajuće područje istraživanja inspirirano vizualnim korteksom mozga sisavca. Zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije, te je pokazalo jako dobre rezultate na problemima raspoznavanja uzoraka. Za problem klasifikacije u računalnom vidu razvijene su duboke konvolucijske neuronske mreže koje traže lokalne značajke na slici pomoću lokalnih filtera ostvarenih konvolucijom. 
 
-U ovom radu razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža, kao i prikaz rezultata u svrhu usporedbe različitih modela. Korištenjem sustava provedeno je istraživanje primjene standarnih neuronskih mreža i dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju, a osim točnosti naučenih klasifikatora uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije.
+U ovom radu razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža, kao i prikaz rezultata u svrhu usporedbe različitih modela. Korištenjem sustava provedeno je istraživanje primjene standarnih neuronskih mreža i dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju, a osim točnosti naučenih klasifikatora uzeta je u obzir i njihova kompleksnost te prosječno trajanje klasifikacije. Također je razvijeno sučelje za korištenje naučenih modela mreža kao klasifikatora u Microblink OCR sustavu čime je omogućena dodatna analiza primjenom modela na mobilnom uređaju.
 
 Dobiveni rezultati potvrdili su prednosti primjene dubokih konvolucijskih mreža na problemu raspoznavanja znakova. 
 
