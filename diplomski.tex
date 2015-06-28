@@ -2,6 +2,7 @@
 \usepackage{booktabs}
 \usepackage{gnuplottex}
 \usepackage{epstopdf}
+\usepackage{placeins}
 
 \begin{document}
 
@@ -23,7 +24,7 @@
 
 \chapter{Uvod}
 
-Optičko prepoznavanje znakova  (eng. Optical Character Recognition – OCR) područje je istraživanja u računalnom vidu koje se bavi segmentacijom i klasifikacijom znakova sa slike. Prepoznavanje teksta sa slike ima vrlo široku primjenu u mnogim područjima ljudske djelatnosti. Jedna od trenutno najvećih primjena je arhiviranje i pretvorba dokumenata iz papirnatog oblika u digitalni oblik kako bi se mogli jednostavnije i brže pohranjivati i pretraživati. Razvijanjem mobilne tehnologije i njene primjene u svakodnevnom životu pojavljuju se nove izazovnije primjene optičkog prepoznavanja znakova koje zahtijevaju prepoznavanje teksta u prirodnim scenama. Tako se danas OCR algoritmi koriste za prepoznavanje podataka sa osobnih dokumenata i računa, prepoznavanje teksta za simultano prevođenje teksta, rješavanje matematičkih jednadžbi i mnoge druge primjene.
+Optičko prepoznavanje znakova  \engl{Optical Character Recognition – OCR} područje je istraživanja u računalnom vidu koje se bavi segmentacijom i klasifikacijom znakova sa slike. Prepoznavanje teksta sa slike ima vrlo široku primjenu u mnogim područjima ljudske djelatnosti. Jedna od trenutno najvećih primjena je arhiviranje i pretvorba dokumenata iz papirnatog oblika u digitalni oblik kako bi se mogli jednostavnije i brže pohranjivati i pretraživati. Razvijanjem mobilne tehnologije i njene primjene u svakodnevnom životu pojavljuju se nove izazovnije primjene optičkog prepoznavanja znakova koje zahtijevaju prepoznavanje teksta u prirodnim scenama. Tako se danas OCR algoritmi koriste za prepoznavanje podataka sa osobnih dokumenata i računa, prepoznavanje teksta za simultano prevođenje teksta, rješavanje matematičkih jednadžbi i mnoge druge primjene.
 
 U strojnom učenju se u zadnjih nekoliko godina pojavilo novo obečavajuće područje istraživanja pod nazivom duboko učenje. Koncept dubokog učenja zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije, te je djelomično inspiriran vizualnim korteksom mozga sisavca. Zbog velike kompleksnosti modela dubokog učenja, te velike količine podataka potrebnih za učenje, istraživanja su u ovom području postala tek nedavno moguća uvođenjem specijaliziranih alata za brzo učenje na grafičkim karticama. Algoritmi dubokog učenja pokazali su jako dobre rezultate na problemima raspoznavanja uzoraka, posebice u području računalnog vida. Za problem klasifikacije na temelju slika razvijene su duboke konvolucijske neuronske mreže, također inspirirane vizualnim korteksom, koje su ostvarile najbolje rezultate na gotovo svim javno dostupnim skupovima za testiranje. Dodatni dokaz da duboko učenje u nekoj mjeri oponaša vizualni korteks su i nedavna istraživanja gdje su se značajke slike naučene dubokim učenjem pokazale sličnim onima u korteksu.
 
@@ -41,7 +42,7 @@ Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture 
 Proces optičkog prepoznavanja znakova provodi se u dva glavna koraka, segmentacije znakova iz slike i njihovog klasificiranja. U ovom radu provodi se istraživanje metoda klasifikacije, te se koristi već segmentirani skup znakova za učenje i testiranje klasifikatora. Stoga je u nastavku ovog poglavlja opisan drugi korak optičkog prepoznavanja znakova, njihovo klasificiranje.
 
 Kao i kod svakog problema raspoznavanje uzoraka u računalnom vidu, transformacije ulaznih slika znakova nastale promjenjivim uvjetima okoline znatno otežavaju klasifikaciju. Promjenjiva pozadina znakova, moguća oštećenja i okluzije, te različita osvijetljenja prilikom slikanja mogu znatno promjeniti ulaznu sliku. Geometrijske transformacije posljedica su i različitih parametara kamere s kojom se slika, kao i pozicije kamere u odnosu na sliku prilikom slikanja.  
-Kako bi se smanjio utjecaj transformacija ulazne slike, standarni je postupak korištenje neke metode predprocesiranja prije slanja slike klasifikatoru.
+Kako bi se smanjio utjecaj transformacija ulazne slike, uobičajeni je postupak korištenje neke metode predprocesiranja prije slanja slike klasifikatoru.
 
 \section{Predprocesiranje slike znaka}
 
@@ -49,37 +50,50 @@ Cilj predprocesiranja je proslijediti klasifikatoru sliku sa jasno definiranim p
 
 \subsection{Binariziranje slike}
 
-Proces binarizacije uspoređuje svaku vrijednost piksela ulazne slike sa definiranim pragom, te ukoliko je vrijednost veća dodjeljuje pikselu novu vrijednost 1, a u suprotnom vrijednost 0. Postoji više metoda definiranja praga za pojedinačni piksel. Najjednostavnija metoda binarizacije koristi ručno određeni prag fiksne vrijednosti jednak za sve piksele. Ovako definiran prag je teško odrediti zbog promjenjivog intenziteta piksela pozadine i znaka, stoga naprednije metode računaju prag na temelju ulazne slike. 
+Proces binarizacije uspoređuje svaku vrijednost piksela ulazne slike sa definiranim pragom, te ukoliko je njegova vrijednost veća dodjeljuje pikselu vrijednost 1, a u suprotnom vrijednost 0. Postoji više metoda definiranja praga za pojedinačni piksel. Najjednostavnija metoda binarizacije koristi ručno određeni prag fiksne vrijednosti jednak za sve piksele. Ovako definiran prag je teško odrediti zbog promjenjivog intenziteta piksela pozadine i znaka, stoga naprednije metode računaju prag na temelju ulazne slike. 
 
-Jednostavniji pristup računanja praga koristi se svim vrijednostima piksela slike, te provodi binarizaciju piksela sa istim globalnim pragom. Ovako određen prag daje bolje rezultate od ručno određenog praga zbog bolje prilagođenosti pojedinačnoj slici, no zbog svoje fiksne vrijednosti za sve piksele nije robustan na lokalne promjene u kontrastu slike. 
+Jednostavniji pristup računanja praga na temelju slike koristi se svim vrijednostima piksela, te provodi binarizaciju piksela sa istim globalnim pragom. Ovako određen prag daje bolje rezultate od ručno određenog praga zbog bolje prilagođenosti pojedinačnoj slici, no zbog svoje fiksne vrijednosti za sve piksele nije robustan na lokalne promjene u kontrastu slike. 
 
-Kako bi binarizacija bila robusna na promjene u osvijetljenju potrebno je određivati prag pojedinačno za svaki piksel u slici. Takav prag se zove adaptivni, te se računa na temelju lokalnog susjedstva piksela. Sama operacija računanja praga može biti jednostavni prosjek vrijednosti svih piksela u susjedstvu ili težinski prosjek koristeći se Gaussovom jezgrom.
+Kako bi binarizacija bila robusna na promjene u osvijetljenju potrebno je određivati prag pojedinačno za svaki piksel u slici. Takav prag se zove adaptivni, te se računa na temelju lokalnog susjedstva piksela. Sama operacija računanja praga može biti jednostavni prosjek vrijednosti svih piksela u susjedstvu ili težinski prosjek koristeći se na primjer Gaussovom jezgrom. 
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=10cm]{slike/thresholding_example.png}
+\caption{Usporedba binarizacije sa globalnim i adaptivnim pragom}
+\end{figure}
 
 
 \subsection{Morfološke operacije}
 
 Digitalnom morfologijom analiziraju se oblici digitalnih objekata. Slika se promatra u kontekstu teorije skupova te se predstavlja kao skup binarnih elemenata koji su grupirani u određene dvodimenzionalne strukture. Za obrađivanje binarnih slika tipično se koriste morfološke operacije dilatacije i erozije, te njihovih kombinacija, operacija zatvaranja i otvaranja. 
 
-Dilatacija prolazi sa strukturnim elementom po slici i traži maksimalnu vrijednost piksela zahvaćenog dijela slike. Pronađenu maksimalnu vrijednost postavlja kao vrijednost svojeg središnjeg piksela, te na taj način proširuje svijetle regije piksela na slici. Erozija, s druge strane, traži minimalnu vrijednost piksela te vrši isti postupak i proširuje tamne regije piksela. Binarna slika sadrži izdvojen znak u crnoj boji na bijeloj podlozi, odnosno predstavljena je tamnom regijom piksela okruženom svijetlim pikselima. Izdvojeni znak u nekim slučajevima ima problem preširokih rubova, odnosno prevelik broj tamnih piksela koji čine njegovo područje. Primjenom dilatacije dolazi do širenja svijetlih regija piksela koje okružuju znak te sužuju njegove rubove.
+Dilatacija prolazi sa strukturnim elementom po slici i traži maksimalnu vrijednost piksela zahvaćenog dijela slike. Pronađenu maksimalnu vrijednost postavlja kao vrijednost svojeg središnjeg piksela, te na taj način proširuje svijetle regije piksela na slici. Erozija, s druge strane, traži minimalnu vrijednost piksela te vrši isti postupak i proširuje tamne regije piksela. Binarna slika sadrži izdvojen znak u crnoj boji na bijeloj podlozi, odnosno predstavljena je tamnom regijom piksela okruženom svijetlim pikselima. Stoga su efekti ovih operatora obrnuti za potrebe obrade slika znakova.  
 
 S obzirom da je u praksi teško znati kada je potrebna dilatacija a kada erozija, češće se koriste njihove kombinacije, otvaranje i zatvaranje.
-Operacija otvaranja primjenjuje prvo eroziju pa dilataciju na slici, čime uklanja nepotrebni šum na slici. Zatvaranje provodi prvo dilataciju slike a zatim eroziju, te uklanja mala oštećenja na objektima. 
+Operacija otvaranja primjenjuje prvo eroziju pa dilataciju na slici, čime uklanja mala oštećenja na znakovima. Zatvaranje provodi prvo dilataciju slike a zatim eroziju, te time uklanja nepotrebni šum na slici. 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=10cm]{slike/closing_example.png}
+\caption{Primjer uklanjanja šuma operacijom zatvaranja}
+\end{figure}
 
 
 \section{Klasifikacija slike znaka}
 
-Kako bi odredili ASCII vrijednost znaka, potrebno je sliku znaka provesti kroz postupak klasifikacije. Standarni postupak razvijanja rješenja klasifikacije sastoji se od dva dijela, razvijanja kvalitetnih značajki koje olakšavaju učenje te razvijanja klasifikatora. 
+Kako bi odredili ASCII vrijednost znaka, potrebno je sliku znaka provesti kroz postupak klasifikacije. Standarni postupak razvijanja rješenja klasifikacije sastoji se od dva dijela, razvijanja kvalitetnih značajki koje olakšavaju klasifikaciju te razvijanja klasifikatora. 
 
 Kvalitetne značajke koje olakšavaju klasifikaciju moraju zadovoljiti više uvjeta. Značajka prije svega treba biti diskriminantna, odnosno njena vrijednost mora biti različita za slike različitih znakova. Drugi uvjet je da vrijednost značajke ostaje ista za različite primjere slika istog znaka, odnosno da je robusna na moguće varijacije unutar jedne klase. Varijacije nastaju uslijed promjenjvih uvjeta okoline, a manifestiraju se najčešće kao geometrijske transformacije i lokalne promjene kontrasta. Stoga značajke trebaju biti invarijantne na promjene osvijetljenja i pomake kao što su translacija i rotacija. Značajke se mogu odrediti ručno na temelju promatranja podataka ili izravno iz skupa podataka metodama koje su opisane u kasnijim poglavljima ovog rada.
 
-Problem učenja klasifikatora veliko je područje istraživanja, te je preveliko za opisati u sklopu ovog rada. Važno je spomenuti svojstvo generalizacije kao glavni uvjet dobre klasifikacije koji definira sposobnost klasifikatora da točno klasificira dotad neviđene primjere. Veliku ulogu u konačnim rezultatima klasifikatora imaju prethodno navedene metode određivanja značajki podataka, kao i sam skup podataka na kojem se klasifikatoru uči.
+Problem učenja klasifikatora veliko je područje istraživanja, te je preveliko za opisati u sklopu ovog rada. Važno je spomenuti svojstvo generalizacije kao glavno mjerilo dobre klasifikacije koje definira sposobnost klasifikatora da točno klasificira dotad neviđene primjere. Veliku ulogu u konačnim rezultatima klasifikatora imaju prethodno navedene metode određivanja značajki podataka, kao i sam skup podataka na kojima se klasifikator uči.
 
 
   
 
 \chapter{Umjetne neuronske mreže}
 
-Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Jedna od najčešćih primjena neuronskih mreža je u području raspoznavanja uzoraka, te se vrlo često koristi upravo za raspoznavanje znakova.
+Umjetna neuronska mreža \engl{Artificial Neural Network - ANN} algoritam je strojnog učenja inspiriran strukturom i funkcionalnošću ljudskog mozga. Zasniva se na paralelnoj obradi podataka, te vrlo dobro rješava probleme kod kojih postoji složena nelinearna veza ulaza i izlaza. Radi s velikim brojem parametara i varijabli, te može raditi s nejasnim podacima što ju čini robusnom na pogreške. Jedna od najčešćih primjena neuronskih mreža je u području raspoznavanja uzoraka, te se vrlo često koristi upravo za raspoznavanje znakova.
 
  
 
@@ -87,77 +101,76 @@ Umjetna neuronska mreža je algoritam strojnog učenja inspiriran strukturom i f
 
 Neuronska mreža se sastoji od tri vrste sloja: ulaznog, izlaznog, te skrivenog koji povezuje prethodna dva. Čvorišta, tzv. neuroni, skrivenog sloja povezani su težinskim vezama s ulaznim i izlaznim neuronima. Standarna arhitektura neuronske mreže je potpuno povezana i aciklička što znači da su svi neuroni iz susjednih slojeva međusobno povezani te da nema ciklusa u mreži između neurona. 
 
-Umjetni neuron je matematička funkcija inspirirana funkcionalnošću biološkog neurona koja radi težinsku sumu svojih ulaza a zatim primjenjuje svoju prijenosnu funkciju na izlazu. Kako bi mreža mogla predstaviti visoko nelinearni odnos između njenog ulaza i izlaza, prijenosna funkcija njenih neurona mora biti nelinearna funkcija. Najčešće korištena prijenosna funkcija je sigmoidalna funkcija koja se koristi zbog svojeg blažeg prijenosa od obične funkcije s fiksnim pragom, te derivabilnosti čija će se važnost opisati kasnije.
-
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=10cm]{slike/neural_architecture.jpeg}
-\caption{}
+\includegraphics[width=10cm]{slike/neural_architecture.png}
+\caption{Primjer jednostavne arhitekture neuronske mreže}
 \end{figure}
+
+Umjetni neuron je matematička funkcija inspirirana funkcionalnošću biološkog neurona koja radi težinsku sumu svojih ulaza a zatim primjenjuje svoju prijenosnu funkciju na izlazu \cite{neuron1943pitts}. Kako bi mreža mogla predstaviti visoko nelinearni odnos između njenog ulaza i izlaza, prijenosna funkcija njenih neurona mora biti nelinearna funkcija. Najčešće korištena prijenosna funkcija je sigmoidalna funkcija koja se koristi zbog svojeg blažeg prijenosa od obične funkcije s fiksnim pragom, te derivabilnosti čija je važnost objašnjena u idućem potpoglavlju.
 
 \section{Učenje neuronskih mreža}
 
-Dvije su faze rada umjetnih neuronskih mreža: učenje (treniranje) i obrada podataka (eksploatacija). Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom učenja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
+Dvije su faze rada umjetnih neuronskih mreža, učenje i eksploatacija. Učenje je iterativan postupak predočavanja ulaznih primjera i očekivanog izlaza pri čemu dolazi do postupnog prilagođavanja težina veza neurona. Nakon što se težine skrivenog sloja prilagode postupkom učenja, eksploatacijom neuronske mreže može se za do tad neviđeni ulazni primjer dobiti pripadajući izlaz.
 
-Jedna neuronska mreža sa svojim težinama može se gledati kao nelinearna funkcija sa više varijabli, te se njeno učenje može opisati kao traženje minimuma te funkcije s obzirom na grešku klasifikacije. Ovaj postupak zove se gradijentni spust, a algoritam koji implementira tu metodu za učenje neuronske mreže zove se algoritam s povratnom vezom (eng. Backpropagation). Radi gradijentne metode prijenosna funkcija neurona mora biti derivabilna, što vrijedi za ranije spomenutu sigmoidalnu funkciju.
-
-Glavna mjera uspješnosti neuronske mreže u klasifikaciji je njena sposobnost generalizacije, odnosno koliko dobro može klasificirati primjere koji nisu korišteni prilikom njenog učenja. Stoga se za potrebe učenja neuronskh mreža podatci dijele na dva (a nekad i tri) skupa: skup za učenje, skup za testiranje i ponekad skup za dodatnu evaluaciju. Kada je greška klasifikacije velika na testnom skupu a mala na skupu za učenje kažemo da je mreža pretjerano prilagođena skupu za učenje (eng. overfitting). Kako bi se dobila mreža sa najboljom sposobnošću generalizacije, postupak učenja se zaustavlja kada se greška mreže na testnom skupu prestane smanjivati.
+Jedna neuronska mreža sa svojim težinama može se gledati kao nelinearna funkcija sa više varijabli, te se njeno učenje može opisati kao traženje minimuma te funkcije s obzirom na grešku klasifikacije. Ovaj postupak zove se gradijentni spust \engl{Gradient descent}, a algoritam koji implementira tu metodu za učenje neuronske mreže zove se algoritam propagacije greške unatrag \engl{Backpropagation algorithm} \cite{backProp}. Radi gradijentne metode prijenosna funkcija neurona mora biti derivabilna kako bi se mogli računati gradijenti, što vrijedi za ranije spomenutu sigmoidalnu funkciju.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=10cm]{slike/overfitting.png}
-\caption{}
+\includegraphics[width=10cm]{slike/generalization.png}
+\caption{Prikaz greške klasifikacije prilikom učenja mreže}
+\label{fig:generalization}
 \end{figure}
+
+Glavna mjera uspješnosti neuronske mreže u klasifikaciji je njena sposobnost generalizacije, odnosno koliko dobro može klasificirati primjere koji nisu korišteni prilikom njenog učenja. Stoga se za potrebe učenja neuronskh mreža podatci dijele na dva (a nekad i tri) skupa: skup za učenje, skup za testiranje i ponekad skup za dodatnu evaluaciju. Kada je greška klasifikacije velika na testnom skupu a mala na skupu za učenje kažemo da je mreža pretjerano prilagođena skupu za učenje \engl{Overfitting}. Kako bi se dobila mreža sa najboljom sposobnošću generalizacije, postupak učenja se zaustavlja kada se greška mreže na testnom skupu prestane smanjivati. Pojednostavljeni prikaz jednog takvog postupka može se vidjeti na Slici \ref{fig:generalization}. 
+
+
 
 
 \chapter{Duboko učenje}
 
-Duboko učenje se u zadnjih nekoliko godina pojavilo kao novo obečavajuće područje statističkog strojnog učenja. Iako je sama ideja prezentirana u radovima Yanna Lecuna i Geoffreya Hintona prije gotovo 30 godina, duboko učenje je postalo predmetom istraživanja relativno nedavno. Razlog tome su bila tada nedovoljno snažna računala za učenje velikih modela karakterističnih za taj pristup. Koncept dubokog učenja zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije. Ideja je djelomično inspirirana vizualnim korteksom mozga sisavaca koji se sastoji od niza procesirajućih elemenata koji obrađuju vizualni podražaj. Dokaz da duboko učenje u nekoj mjeri oponaša vizualni korteks su i nedavna istraživanja gdje su se naučene značajke pokazale slične onima u korteksu. Glavna karakteristika algoritama dubokog učenja je velik broj slojeva kroz koje ulazni podatak mora proći do izlaza, gdje se prvi dio prolaza može zamisliti kao formiranje hijerarhijskog prikaza podatka, a drugi kao proces klasifikacije. Time jedan algoritam dubokog učenja ustvari preuzima zadatak izvlačenja korisnih značajki iz podataka uz sami zadatak klasifikacije. Kod učenja takvog algoritma cijeli se postupak uči na temelju podataka, te se time gubi potreba za ručnim definiranjem značajki podataka. 
+Duboko učenje se u zadnjih nekoliko godina pojavilo kao novo obečavajuće područje strojnog učenja. Iako je sama ideja prezentirana u radovima Kunihika Fukushime \cite{fukushima1980deep} i Yanna Lecuna \cite{lecun1989zipcode} prije gotovo 30 godina, duboko učenje je postalo predmetom istraživanja relativno nedavno. Razlog tome su bila tada nedovoljno snažna računala za učenje velikih modela karakterističnih za taj pristup. Koncept dubokog učenja zasniva se na učenju korisnih prezentacija podataka povezanih u obliku hijerarhije. Ideja je djelomično inspirirana vizualnim korteksom mozga sisavaca koji se sastoji od niza procesirajućih elemenata koji obrađuju vizualni podražaj. Dokaz da duboko učenje u nekoj mjeri oponaša vizualni korteks su i nedavna istraživanja gdje su se naučene značajke pokazale slične onima u korteksu. Glavna karakteristika algoritama dubokog učenja je velik broj slojeva kroz koje ulazni podatak mora proći do izlaza, gdje se prvi dio prolaza može zamisliti kao formiranje hijerarhijskog prikaza podatka, a drugi kao proces klasifikacije. Time jedan algoritam dubokog učenja ustvari preuzima zadatak izvlačenja korisnih značajki iz podataka uz sami zadatak klasifikacije. Kod učenja takvog algoritma cijeli se postupak uči na temelju podataka, te se time gubi potreba za ručnim definiranjem značajki podataka. 
 
 \section{Hijerarhijski prikaz podataka}
 
 Slika se može klasifikatoru prikazati na mnogo načina, od kojih je najjednostavniji vektor vrijednosti intenziteta piksela. Apstraktniji prikaz bio bi recimo skup rubova na slici, a još apstraktniji skup različitih oblika. Neki prikazi olakšavaju klasifikatoru proces učenja, a različiti problemi klasifikacije zahtijevaju razvijanje različitih prikaza odnosno značajki ulaznih podataka. Stoga  se tradicionalno razvijanje rješenja problema klasifikacije sastoji od dva dijela, razvijanja kvalitetnih značajki koje olakšavaju učenje te razvijanja klasifikatora. 
 
-Proces razvoja kvalitetnih značajki podrazumijeva promatranje svojstva ulaznih podataka te naglašavanje onih koja su maksimalno diskriminantna. Napredak u točnosti klasifikacije većim dijelom se ostvarivao razvijanjem boljih značajki, tako je na primjer značajni napredak u prepoznavanju čovjeka ostvaren razvijanjem HoG značajki koje su dobro opisivale lokalne oblike te u isto vrijeme bile invarijantne na  promjene osvijetljenja i geometrijske transformacije. No s obizrom da se takav postupak razvijanja značajki bazira na ljudskom promatranju podataka, dolazi do gubitka informacija koje čovjek nije u stanju vidjeti. 
+Uobičajeni proces razvoja kvalitetnih značajki podrazumijeva promatranje svojstva ulaznih podataka te naglašavanje onih koja su maksimalno diskriminantna. Napredak u točnosti klasifikacije većim dijelom se ostvaruje razvijanjem boljih značajki, tako je na primjer značajni napredak u prepoznavanju čovjeka ostvaren razvijanjem značajki pomoću histograma orijentiranih gradijenata \engl{Histogram of Oriented Gradients - HoG} \cite{dalal2005hog}. Histogrami su dobro opisivali lokalne oblike te u isto vrijeme bili u velikoj mjeri invarijantni na  promjene osvijetljenja i geometrijske transformacije. 
 
-Kako bi se koristile sve informacije iz podataka, potrebne su metode koje određuju diskriminantne značajke izravno iz skupa podataka. Među popularnijim metodama tog tipa su metoda linearne diskriminantne analize (LDA) te metoda glavnih komponenata (PCA). Linearna diskriminantna analiza pronalazi prikaz podataka koji maksimalno diskriminira podatke različitih klasa, dok metoda glavnih komponenata prikazuje podatke kao linearnu kombinaciju linearno nekoreliranih varijabli koje imaju najveću varijancu.
+No negativna strana postupka razvijanja značajki koje se baziraju na ljudskom promatranju podataka je gubitak informacija koje čovjek nije u stanju vidjeti. Kako bi se koristile sve informacije iz podataka, potrebne su metode koje određuju diskriminantne značajke izravno iz skupa podataka. Među popularnijim metodama tog tipa su metoda linearne diskriminantne analize \engl{Linear Discriminant Analysis - LDA} te metoda glavnih komponenata \engl{Principal Component Analysis - PCA}. Linearna diskriminantna analiza pronalazi prikaz podataka koji maksimalno diskriminira podatke različitih klasa, dok metoda glavnih komponenata prikazuje podatke kao linearnu kombinaciju linearno nekoreliranih varijabli koje imaju najveću varijancu.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[height=9cm]{slike/feature_hierarchy2.jpeg}
-\caption{}
+\includegraphics[height=9cm]{slike/feature_hierarchy.png}
+\caption{Hijerarhija značajki ljudskog lica naučena dubokim učenjem}
+\label{fig:hierarchy}
 \end{figure}
 
-Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz više procesirajućih slojeva koji tvore hijerarhiju gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja inspirirana je vizualnim korteksom te se zasniva na učenju cijele hijerarhije, odnosno više razina apstrakcije. Primjer jedne takve hijerarhije značajki ljudskog lica naučene dubokim učenjem prikazan je na Slici ???.
+Istraživanja vizualnog korteksa mozga sisavaca pokazala su da vizualni podražaj prolazi kroz hijerarhiju više procesirajućih slojeva gdje svaki dodatni sloj predstavlja dodatnu razinu apstrakcije značajki.  Značajke dobivene prethodno navedenim metodama predstavljaju jednu razinu apstrakcije, te se mogu zamisliti kao imitacija najnižeg sloja vizualnog korteksa. Ideja dubokog učenja je naučiti cijelu hijerarhiju značajki, odnosno imitirati i više slojeve vizualnog korteksa. Primjer jedne takve hijerarhije značajki ljudskog lica naučene dubokim učenjem prikazan je na Slici \ref{fig:hierarchy}.
 
 
 \section{Učenje dubokih mreža}
 
-Kao što je ranije spomenuto ideja dubokog učenja je naučiti hijerarhiju značajki iz podataka. S obzirom da to zahtijeva nekoliko dodatnih slojeva mreže, kompleksnost dubokih modela značajno je veća od standarnih. Poznato je da količina potrebnih podataka za kvalitetno učenje modela raste proporcionalno sa brojem njegovih slobodnih parametara. Stoga je za učenje dubokih mreža potrebno za red veličine više podataka nego kod učenja standarnih klasifikatora. Nedovoljna količina podataka za učenje, te nedovoljno jaka računala za učenje tako velikih modela, razlog su zašto duboko učenje nije zaživjelo 1980-ih godina kada je prvi put predstavljeno kao ideja. Dolazak specijaliziranih razvojnih alata za brzo učenje mreža na grafičkim karticama, kao i sve veća količina dostupnih podataka za učenje, omogućili su da duboko učenje u zadnjih nekoliko godina pokaže svoj potencijal na raznim problemima strojnog učenja.
+Kao što je ranije spomenuto ideja dubokog učenja je naučiti hijerarhiju značajki iz podataka. S obzirom da to zahtijeva nekoliko dodatnih slojeva mreže, kompleksnost dubokih modela značajno je veća od standarnih. Poznato je da količina potrebnih podataka za kvalitetno učenje modela raste proporcionalno sa brojem njegovih slobodnih parametara. Stoga je za učenje dubokih mreža potrebno značajno više podataka nego kod učenja standarnih klasifikatora. Nedovoljna količina podataka za učenje, te nedovoljno jaka računala za učenje tako velikih modela, razlog su zašto duboko učenje nije zaživjelo 1980-ih godina kada je prvi put predstavljeno kao ideja. Dolazak specijaliziranih razvojnih alata za brzo učenje mreža na grafičkim karticama, kao i sve veća količina dostupnih podataka za učenje, omogućili su da duboko učenje u zadnjih nekoliko godina pokaže svoj potencijal na raznim problemima strojnog učenja.
 
 Jedna od velikih prednosti dubokog učenja je što uz metode nadziranog učenja ima razvijene i metode nenadziranog učenja. U ovom radu koristi se isključivo nadzirano učenje zbog dostupnosti velike količine označenih podataka. U nastavku ovog poglavlja opisana je metoda nenadziranog učenja, a metoda nadziranog učenja opisana je u idućem poglavlju kao uvod u duboke konvolucijske mreže.
 
-Sve veća količina podataka postaje dostupna za učenje, no velikim dijelom radi se o neoznačenim podatcima. Kako bi se i ti podatci iskoristili potrebne su metode nenadziranog učenja. Kao što je ranije spomenuto, duboki modeli predstavljaju hijerarhiju značajki podataka, a jednu razinu apstrakcije moguće je postići metodom glavnih komponenata (PCA). Stoga se u teoriji postavlja pitanje da li uzastopnim primjenjivanjem metode glavnih komponenata možemo dobiti traženu hijerarhiju. Odgovor na to pitanje je da ne možemo, a razlog tome je linearnost te metode. Uzastopnom linearnom transformacijom konačno se uvijek dobiva linearna transformacija, što onemogućuje stvaranje željene hijerarhije. Iz tog razloga razvijene su dvije nove metode sa dodanom nelinearnošću, autoenkoderi i ograničeni Boltzmann strojevi. U sklopu ovog rada opisati će se autoenkoderi, jednostavnija i intuitivnija metoda od dvije navedene.
+Sve veća količina podataka postaje dostupna za učenje, no velikim dijelom radi se o neoznačenim podatcima. Kako bi se i ti podatci iskoristili potrebne su metode nenadziranog učenja. Kao što je ranije spomenuto, duboki modeli predstavljaju hijerarhiju značajki podataka, a jednu razinu apstrakcije moguće je postići metodama poput metode glavnih komponenata. Stoga se u teoriji postavlja pitanje da li uzastopnim primjenjivanjem metode glavnih komponenata možemo dobiti traženu hijerarhiju. Odgovor na to pitanje je da ne možemo, a razlog tome je linearnost te metode. Uzastopnom linearnom transformacijom konačno se uvijek dobiva linearna transformacija, što onemogućuje stvaranje željene hijerarhije. Iz tog razloga koriste se dvije metode sa dodanom nelinearnošću, autoenkoderi \engl{Autoencoders} i ograničeni Boltzmann strojevi \engl{Restricted Boltzmann Machines - RBM} \cite{hinton2006rbm}. U sklopu ovog rada opisati će se autoenkoderi, jednostavnija i intuitivnija metoda od dvije navedene.
 
-Autoenkoder je jednostavna troslojna neuronska mreža kod koje su izlazni neuroni izravno povezani sa ulaznim neuronima. 
+Autoenkoder je jednostavna troslojna neuronska mreža kod koje su izlazni neuroni izravno povezani sa ulaznim neuronima. Broj neurona u srednjem sloju manji je od onog u ulaznom i izlaznom sloju. Kao posljedica toga prolaskom podataka kroz mrežu događaju se dvije radnje, enkodiranje i dekodiranje. Zato što je broj neurona srednjeg sloja manji od broja elemenata ulaznog sloja, ulazni vektor se kompresira, odnosno podatak se u srednjem sloju prikazuje pomoću apstraktnijih značajki. Nakon toga vrši se dekompresija, odnosno dekodiranje, kako bi se na temelju značajki iz srednjeg sloja rekonstruirao ulazni vektor. Vrijednosti izlaznog vektora zatim se uspoređuju sa onima ulaznog vektora kako bi se dobila informacija o kvaliteti rekonstrukcije, odnosno koliko dobro značajke iz srednjeg sloja predstavljaju ulazni podatak.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=9cm]{slike/autoenkoder.png}
-\caption{}
+\includegraphics[width=9cm]{slike/autoencoder.png}
+\caption{Prikaz rada autoenkodera}
 \end{figure}
 
-Broj neurona u srednjem sloju manji je od onog u ulaznom i izlaznom sloju. Kao posljedica toga prolaskom podataka kroz mrežu događaju se dvije radnje, enkodiranje i dekodiranje. Zato što je broj neurona srednjeg sloja manji od broja elemenata ulaznog sloja, ulazni vektor se kompresira, odnosno podatak se u srednjem sloju prikazuje pomoću apstraktnijih značajki. Nakon toga vrši se dekompresija, odnosno dekodiranje, kako bi se na temelju značajki iz srednjeg sloja rekonstruirao ulazni vektor.
-Vrijednosti izlaznog vektora zatim se uspoređuju sa onima ulaznog vektora kako bi se dobila informacija o kvaliteti rekonstrukcije, odnosno koliko dobro značajke iz srednjeg sloja predstavljaju ulazni podatak.
-
-Proces učenja autoenkodera sastoji se od iterativnog enkodiranja i dekodiranja ulaznih podataka za učenje te korigiranja njegovih težina na temelju greške u rekonstrukciji. Rezultat učenja je autoenkoder sa težinama koje čine elemente njegovog srednjeg sloja apstraktnim značajkama koje dobro opisuju prezentirane podatke. 
-
-S obzirom da autoenkoder radi nelinearnu transformaciju nad ulaznim podatcima, možemo ostvariti hijerarhiju apstraktnih značajki slijednim povezivanjem više autoenkodera. Učenje se provodi iterativno, odnosno prvi autoenkoder uči se na temelju ulaznih podataka, a svaki idući na temelju naučenih značajki svojeg prethodnika. 
+Proces učenja autoenkodera sastoji se od iterativnog enkodiranja i dekodiranja ulaznih podataka za učenje te korigiranja njegovih težina na temelju greške u rekonstrukciji. Rezultat je autoenkoder sa težinama koje čine elemente njegovog srednjeg sloja apstraktnim značajkama koje dobro opisuju prezentirane podatke. S obzirom da autoenkoder radi nelinearnu transformaciju nad ulaznim podatcima, možemo ostvariti hijerarhiju apstraktnih značajki slijednim povezivanjem više autoenkodera. Učenje se provodi iterativno, odnosno prvi autoenkoder uči se na temelju ulaznih podataka, a svaki idući na temelju naučenih značajki svojeg prethodnika. 
 
 \begin{figure}[ht!]	
 \centering
-\includegraphics[width=9cm]{slike/stacked_autoencoders.png}
-\caption{}
+\includegraphics[width=16cm]{slike/stacked_autoencoders.jpg}
+\caption{Prikaz iterativnog učenja slijeda autoenkodera}
 \end{figure}
 
 Ovako dobivena mreža naučena je isključivo na neoznačenim podatcima te predstavlja hijerarhiju značajki podataka bez mogućnosti klasifikacije. Konačni klasifikator dobiva se dodavanjem jedne manje mreže koja na ulaz prima značajke zadnjeg autoenkodera a na izlaz vraća klase zadanog problema. Tako povezana mreža autoenkodera i mreža za klasifikaciju zatim se uče na označenim podatcima kao jedna velika mreža.
@@ -170,44 +183,45 @@ U prethodnom poglavlju opisana je metoda nenadziranog učenja koja može naučit
 Kao i kod nenadziranog učenja, konačni model koji se uči sastoji se od dijela za formiranje hijerarhije značajki i dijela za klasifikaciju, no nadzirano učenje je proces koji se provodi u jednom koraku i na jednom skupu podataka. Sam postupak učenja ne razlikuje se od standarnog učenja neuronske mreže metodom gradijentnog spusta.
 
 Istraživanja vizualnog korteksa pokazala su da njegovi procesirajući elementi reagiraju na male lokalne podražaje unutar vizualnog polja, funkcionirajući kao lokalni receptori. Glavna karakteristika prirodnih slika je njihova lokalna prostorna korelacija, pa je logično da se vizualni korteks prilagodio traženju lokalnih značajki.
-Klasične neuronske mreže sa potpuno povezanim slojevima ne iskorištavaju ovo korisno svojstvo, stoga je razvijena konvolucijska neuronska mreža koja sa svojim lokalnim prostornim filterima oponaša lokalne receptore vizualnog korteksa.
+Klasične neuronske mreže sa potpuno povezanim slojevima ne iskorištavaju ovo korisno svojstvo, što je potaknulo Yanna Lecuna 1989. godine da razvije model konvolucijske neuronske mreže \cite{lecun1998lenet}. Razvijena mreža oponaša lokalne receptore vizualnog korteksa sa svojim lokalnim prostornim filterima ostvarenim konvolucijom.
 
 \section{Lokalni prostorni filteri}
 
-Konvolucijom ostvareni filteri omogućuju provođenje kompleksnih operacija jednostavnom promjenom konvolucijske jezgre. Tako bi na primjer upotrebom Gaussian jezgre dobili za rezultat zamućenje slike, a upotrebom Sobel jezgre naglašene rubove na slici. Ručno definiranje konvolucijskih jezgri upravo odgovara ranije spomenutom ručnom određivanju značajki u standarnom postupku razvijanja klasifikatora. Cilj konvolucijske neuronske mreže je naučiti konvolucijske jezgre specifične za dane podatke, što odgovara ranije spomenutom učenju značajki iz podataka.
+Konvolucijom ostvareni filteri omogućuju provođenje kompleksnih operacija jednostavnom promjenom konvolucijske jezgre. Tako bi na primjer upotrebom Gaussianove jezgre dobili za rezultat zamućenje slike, a upotrebom Sobelove jezgre \cite{sobel1968operator} naglašene rubove na slici. Ručno definiranje konvolucijskih jezgri upravo odgovara ranije spomenutom ručnom određivanju značajki u standarnom postupku razvijanja klasifikatora. Cilj konvolucijske neuronske mreže je naučiti konvolucijske jezgre specifične za dane podatke, što odgovara ranije spomenutom učenju značajki iz podataka.
 
-U dubokoj konvolucijskoj mreži prvih nekoliko slojeva zaduženih za izgradnju hijerarhije značajki je konvolucijsko. Uloga prvog sloja konvolucije je jasna s obzirom da odgovara standarnom filtriranju slike sa nekom konvolucijskom jezgrom. Viši slojevi konvolucije nemaju doticaja sa ulaznom slikom, već formiraju apstraktnije lokalne značajke od značajki prethodnog sloja. Na primjer u problemu detekcije čovjeka prvi sloj konvolucije razvio bi lokalne detektore rubova na slici, sloj iznad njega formirao bi lokalne oblike koristeći se sa rubovima iz prvog sloja, a sloj za razinu više bi koristio lokalne oblike za formiranje detektora dijelova tijela čovjeka. Jednom kada mreža ima detektore značajki koje opisuju prisutnost glavnih dijelova objekta, u ovom slučaju čovjeka, klasifikacija postaje jednostavna.
+U dubokoj konvolucijskoj mreži prvih nekoliko slojeva zaduženih za izgradnju hijerarhije značajki je konvolucijsko. Uloga prvog sloja konvolucije je jasna s obzirom da odgovara standarnom filtriranju slike sa nekom konvolucijskom jezgrom. Viši slojevi konvolucije nemaju doticaja sa ulaznom slikom, već formiraju apstraktnije lokalne značajke od značajki prethodnog sloja. Na primjer u problemu detekcije čovjeka prvi sloj konvolucije razvio bi lokalne detektore rubova na slici, sloj iznad njega formirao bi lokalne oblike koristeći se sa rubovima iz prvog sloja, a sloj za razinu više bi koristio lokalne oblike za formiranje detektora dijelova tijela čovjeka. Jednom kada mreža ima detektore značajki koje opisuju prisutnost glavnih dijelova objekta, u ovom slučaju čovjeka, problem klasifikacije postaje znatno jednostavniji.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=14cm]{slike/kernel_convolution.jpg}
-\caption{}
+\caption{Primjer računanja vrijednosti lokalnog prostornog filtera}
 \end{figure}
 
 \section{Dijeljenje težina}
 
-Jednom naučeni lokalni filteri mogu prepoznati neku značajku podataka, no nepoznato je gdje se ta značajka nalazi u prostoru. Kako bi razvili lokalne filtere invarijantne na poziciju u prostoru, potrebno je za svaki filter imati skup njegovih inačica koje pokrivaju sve moguće podprostore. Takav skup zovemo mapa značajki, a glavna karakteristika takve mape je dijeljenje težina između svih elemenata skupa. Svaki element konvolucijskog sloja prikazuje se tada kao matrica koja sadrži vrijednosti odziva  pripadajućeg filtera za svaku poziciju u prostoru. Primjer jedne takve mape značajki na višoj razini apstrakciji prikazan je na Slici ???, gdje je važno primjetiti da konvolucija nakon prvog sloja postaje trodimenzionalna zbog uvođenja mape značajki koja je dvodimenzionalni prikaz elementa konvolucijskog sloja.
+Jednom naučeni lokalni filteri mogu prepoznati neku značajku podataka, no nepoznato je gdje se ta značajka nalazi u prostoru. Kako bi razvili lokalne filtere invarijantne na poziciju u prostoru, potrebno je za svaki filter imati skup njegovih inačica koje pokrivaju sve moguće podprostore. Takav skup zovemo mapa značajki  \engl{Feature maps} , a glavna karakteristika takve mape je dijeljenje težina između svih elemenata skupa. Svaki element konvolucijskog sloja prikazuje se tada kao matrica koja sadrži vrijednosti odziva  pripadajućeg filtera za svaku poziciju u prostoru. Dijeljenje težina na višoj razini apstrakcije prikazano je na Slici \ref{fig:sharedWeights}, gdje je važno primjetiti da konvolucija nakon prvog sloja postaje trodimenzionalna zbog uvođenja mape značajki koja je dvodimenzionalni prikaz elementa konvolucijskog sloja.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=12cm]{slike/shared_weights.png}
-\caption{}
+\caption{Prikaz dijeljenja težina na višoj razini apstrakcije}
+\label{fig:sharedWeights}
 \end{figure}
 
 Za učenje mreža sa dijeljenim težinama još uvijek se može koristiti metoda gradijentnog spusta, ali uz malu preinaku. Gradijent dijeljene težine računa se kao suma gradijenata svih parametara koji se dijele. 
-Osim što ostvaruje prostornu invarijantnost lokalnih filtera, dijeljenje težina znatno doprinosi i procesu učenja konvolucijske mreže. Dijeljenjem težina između parametara  mreže smanjujemo ukupan broj slobodnih parametara koje je potrebno naučiti, što smanjuje trajanje učenja. No ono što je još važnije, smanjenjem slobodnih parametara poboljšava se sposobnost generalizacije mreže stavljanjem dodatnog ograničenja na njenu kompleksnost.  
+Osim što ostvaruje prostornu invarijantnost lokalnih filtera, dijeljenje težina znatno doprinosi i procesu učenja konvolucijske mreže. Dijeljenjem težina između parametara  mreže smanjujemo ukupan broj slobodnih parametara koje je potrebno naučiti, što smanjuje trajanje učenja. No ono što je još važnije, smanjenjem broja slobodnih parametara poboljšava se sposobnost generalizacije mreže stavljanjem dodatnog ograničenja na njenu kompleksnost.  
 
 \section{Lokalno udruživanje}
 
-Još jedan važan koncept dubokih konvolucijskih mreža je lokalno udruživanje, koje se može definirati kao oblik nelinearnog poduzorkovanja. U praksi se najviše koristi inačica maksimalnog lokalnog udruživanja (eng. max pooling) koja za poduzorkovanje koristi operaciju traženja maksimuma. 
+Još jedan važan koncept dubokih konvolucijskih mreža je lokalno udruživanje \engl{Pooling}, koje se može definirati kao oblik nelinearnog poduzorkovanja. U praksi se najviše koristi inačica maksimalnog lokalnog udruživanja \engl{Max pooling} koja za poduzorkovanje koristi operaciju traženja maksimuma. 
 Postupak maksimalnog lokalnog udruživanja na slici sastoji se od dijeljenja slike na nepreklapajuće podprozore fiksne veličine, te uzimanja maksimalne vrijednosti svakog podprozora za rezultat. Dobivena slika za podprozore veličine 2x2 bila bi u tom slučaju dvostruko manja od originalne slike, sa vrijednostima svih maksimalnih elemenata podprozora. 
 Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenjuje na ulaznoj slici, već kao dodatni sloj nakon svakog sloja konvolucije. Time ova metoda postaje korisna na dva načina: eliminira vrijednosti koje nisu maksimalne što smanjuje količinu računanja u višim slojevima, te ostvaruje jedan oblik invarijantnosti na translaciju. Invarijantnost proizlazi iz činjenice da se uzimanjem maksimalne vrijednosti nekog podprozora prepoznaje odziv lokalnog filtera na bilo kojoj lokaciji unutar podprozora, odnosno dopušta se mali pomak naučenih značajki u prostoru.
 
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=10cm]{slike/max_pooling.jpeg}
-\caption{}
+\includegraphics[width=11cm]{slike/max_pooling.jpeg}
+\caption{Primjer lokalnog udruživanja na 10 mapi značajki}
 \end{figure}
 
 
@@ -215,29 +229,31 @@ Maksimalno lokalno udruživanje se u dubokim konvolucijskim mrežama ne primjenj
 
 Ono što razlikuje neuronske mreže od linearnih klasifikatora su dodane prijenosne funkcije za postizanje nelinearnosti. U standarnoj potpuno povezanoj neuronskoj mreži svaki element sadrži prijenosnu funkciju, najčešće sigmoidalnog tipa. Dodavanje nelinearnosti u dubokoj konvolucijskoj mreži postiže se dodavanjem sloja koji na svaku vrijednost prijašnjeg sloja primjenjuje prijenosnu funkciju. 
 
-Primjenom sigmoidalne prijenosne funkcije kod učenja duboke arhitekture pojavljuje se problem nestajućeg gradijenta. Zbog svojstva sigmoidalne funkcije da ograničava vrijednosti na mali izlazni interval, vrijednosti gradijenata postaju izrazito male ukoliko se prosljeđuju kroz veliki broj slojeva, što onemogućuje kvalitetno učenje.
-Rješenje ovog problema je osmišljeno primjenom ispravljene linearne jedinice kao prijenosne funkcije. Ispravljena prijenosna funkcija definirana je operacijom maksimuma od ulazne vrijednosti i nule, što ju čini izrazito jednostavnom za računanje. Osim što se rješava problem nestajućeg gradijenta, postiže se i efekt raspršene aktivacije, odnosno u prosjeku se samo pola elemenata aktivira svakim prolazom kroz mrežu što pospješuje sposobnost generalizacije.  
+Primjenom sigmoidalne prijenosne funkcije kod učenja duboke arhitekture pojavljuje se problem nestajućeg gradijenta \engl{Vanishing gradient problem} \cite{hochreiter2001vanish}. Zbog svojstva sigmoidalne funkcije da ograničava vrijednosti na mali izlazni interval, vrijednosti gradijenata postaju izrazito male ukoliko se prosljeđuju kroz veliki broj slojeva, što onemogućuje kvalitetno učenje.
+Rješenje ovog problema prvi je osmislio Yoshua Bengio primjenom ispravljene linearne jedinice \engl{Rectified Linear Unit - ReLU} kao prijenosne funkcije \cite{bengio2011relu}. Ispravljena prijenosna funkcija definirana je operacijom maksimuma od ulazne vrijednosti i nule, što ju čini izrazito jednostavnom za računanje. Osim što se rješava problem nestajućeg gradijenta, postiže se i efekt raspršene aktivacije, odnosno u prosjeku se samo pola elemenata aktivira svakim prolazom kroz mrežu što pospješuje sposobnost generalizacije.  
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=15cm]{slike/sigmoid_relu.png}
-\caption{}
+\caption{Usporedba sigmoidalne funkcije i ispravljene linearne jedinice}
 \end{figure}
 
+\newpage
 
 \section{Konačni model}
 
 Kao što je ranije spomenuto, konačni model duboke konvolucijske mreže sastoji se od dijela za formiranje hijerarhije značajki i dijela za klasifikaciju. Prvi dio modela ostvaren je slojevima koji implementiraju ranije spomenute koncepte dubokih konvolucijskih mreža, a drugi standardnim potpuno povezanima slojevima. 
 
-Nakon svakog sloja konvolucije dodaje se sloj maksimalnog lokalnog udruživanja, a zatim sloj ispravljenih linearnih jedinica za postizanje nelinarnosti. Primjer jednog takvog konačnog modela prikazan je na Slici ???.
+Nakon svakog sloja konvolucije dodaje se sloj maksimalnog lokalnog udruživanja, a zatim sloj ispravljenih linearnih jedinica za postizanje nelinarnosti. Primjer jednog takvog konačnog modela prikazan je na Slici \ref{fig:cnnmodel}, uz pretpostavku da se nakon svakog sloja lokalnog udruživanja primjenjuje prijenosna funkcija.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=15cm]{slike/convnet2.png}
-\caption{}
+\includegraphics[width=15cm]{slike/convnet.jpg}
+\caption{Primjer modela duboke konvolucijske neuronske mreže}
+\label{fig:cnnmodel}
 \end{figure}
 
-Odabir arhitekture dubokih konvolucijskih mreža dodatno je otežan u odnosu na standarne neuronske mreže. Osim standarnih hiperparametara koji određuju broj slojeva i broj elemenata po sloju mreže, za duboku konvolucijsku arhitekturu potrebno je odrediti veličine lokalnih prostornih filtera i filtera maksimalnog lokalnog udruživanja. Veličine lokalnih filtera ponajprije ovise o veličine ulazne slike, te je cilj odrediti veličinu kojom će se kvalitetno formirati apstrakcije po slojevima. Veličine filtera maksimalnog lokalnog udruživanja uobičajeno su male zbog gubljenja velike količine podataka kod većih filtera. Također je važno uzeti u obzir da se veličine mapa značajki smanjuju nakon svakog sloja konvolucije i lokalnog udruživanja, što se u praksi kompenzira dodavanjem većeg broj mapa u višim slojevima.
+Odabir arhitekture dubokih konvolucijskih mreža dodatno je otežan u odnosu na standarne neuronske mreže. Osim standarnih hiperparametara koji određuju broj slojeva i broj elemenata po sloju mreže, za duboku konvolucijsku arhitekturu potrebno je odrediti veličine lokalnih prostornih filtera i filtera maksimalnog lokalnog udruživanja. Veličine lokalnih filtera ponajprije ovise o veličine ulazne slike, te je cilj odrediti veličinu kojom će se kvalitetno formirati apstrakcije značajki po slojevima mreže. Veličine filtera maksimalnog lokalnog udruživanja uobičajeno su male zbog gubljenja velike količine podataka kod većih filtera. Također je važno uzeti u obzir da se veličine mapa značajki smanjuju nakon svakog sloja konvolucije i lokalnog udruživanja, što se u praksi kompenzira dodavanjem većeg broj mapa u višim slojevima.
 
 
 
@@ -515,9 +531,6 @@ Postupkom selekcije modela nad standarnim neuronskim arhitekturama ustanovljeno 
 Usporedbom rezultata optimalnih modela standarnih i konvolucijskih neuronskih mreža pokazana je prednost korištenja konvolucijske arhitekture na problemu raspoznavanja znakova. Konvolucijska arhitektura ima za red veličine manji broj slobodnih parametara od standarne arhitekture, što je izravna posljedica dodatnih ograničenja koje mehanizmi dubokih konvolucijskih mreža postavljaju na kompleksnost modela. To svojstvo konvolucijskog modela doprinosi njegovoj sposobnosti generalizacije, te omogućuje u konačnici bolje rezultate na ručno označenom skupu podataka.
 
 Rezultati klasifikatora tvrtke Microblink lošiji su od rezultata standarnih i konvolucijskih neuronskih mreža, što se može objasniti negativnim utjecajem predprocesiranja podataka i ručnog definiranja značajki samo jedne razine apstrakcije. Prednost Microblink klasifikatora u odnosu na odabrane modele neuronskih mreža je njegova za red veličine veća brzina, no brzine neuronskih modela još uvijek su dovoljno velike za primjenu u stvarnom vremenu na mobilnom uređaju. 
-
-
-
 
 \bibliography{literatura}
 \bibliographystyle{fer}
