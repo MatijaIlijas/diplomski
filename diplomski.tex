@@ -1,4 +1,5 @@
 \documentclass[lmodern, utf8, diplomski, numeric]{fer}
+
 \usepackage{booktabs}
 \usepackage{gnuplottex}
 \usepackage{epstopdf}
@@ -14,11 +15,7 @@
 
 \maketitle
 
-% Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
 \izvornik
-
-% Dodavanje zahvale ili prazne stranice. Ako ne želite dodati zahvalu, naredbu ostavite radi prazne stranice.
-\zahvala{}
 
 \tableofcontents
 
@@ -290,13 +287,13 @@ Tako je na primjer standarna dvoslojna neuronska mreža definirana kao sekvencij
 \end{figure}
 \FloatBarrier
 
-Za definiranje duboke konvolucijske mreže u Torchu potrebno je dodatno koristiti slojeve za prostornu konvoluciju, maksimalno lokalno udruživanje i ispravljene linearne jedinice. Primjer definiranja jednog dubokog konvolucijskog modela prikazan je na Slici \ref{fig:cnnmodel}.
+Za definiranje duboke konvolucijske mreže u Torchu potrebno je dodatno koristiti slojeve za prostornu konvoluciju, maksimalno lokalno udruživanje i ispravljene linearne jedinice. Primjer definiranja jednog dubokog konvolucijskog modela prikazan je na Slici \ref{fig:cnntorch}.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=16cm]{slike/cnn_model.png}
 \caption{Definiranje Torch modela duboke konvolucijske neuronske mreže}
-\label{fig:cnnmodel}
+\label{fig:cnntorch}
 \end{figure}
 
 \newpage
@@ -567,15 +564,25 @@ Rezultati klasifikatora tvrtke Microblink lošiji su od rezultata standarnih i k
 
 \begin{sazetak}
 
+U ovom radu provedeno je istraživanje primjene dubokih konvolucijskih neuronskih mreža na problemu raspoznavanja znakova. U tu svrhu razvijen je sustav za učenje i testiranje različitih arhitektura neuronskih mreža. Podsustav za učenje implementiran je pomoću razvojnog alata za paralelno računanje na grafičkoj kartici kako bi postupak bio što brži. Dio sustava za testiranje razvijen je s ciljem detaljne analize rada naučenih modela, te jednostavne i pregledne usporedbe više različitih modela. 
 
-\kljucnerijeci{Ključne riječi, odvojene zarezima.}
+Istraživanje je ostvareno uz dodatnu podršku tvrtke Microblink specijalizirane za razvoj tehnologija računalnog vida za mobilne uređaje. Za učenje i testiranje modela koriste se od tvrtke interni skupovi podataka, a prilikom testiranja provodi se analiza i njihovog internog klasifikatora. 
+Rezultati su prikazani i komentirani sa ciljem pronalaska optimalne arhitekture modela za primjenu na mobilnom uređaju. Pritom je osim točnosti naučenih klasifikatora uzeta u obzir i njihova kompleksnost te prosječno trajanje klasifikacije.
+
+\kljucnerijeci{računalni vid, raspoznavanje znakova, neuronske mreže, duboko učenje, konvolucijske mreže}
 \end{sazetak}
+
+\newpage
 
 \engtitle{Deep convolutional neural networks for character recognition}
 \begin{abstract}
-Abstract.
 
-\keywords{Keywords.}
+In this thesis, deep convolutional neural networks for optical character recognition have been researched. For this purpose a system for learning and testing of different architectures of neural networks has been developed. Subsystem for learning was implemented with development tools for parallel computing on graphics cards to make the procedure as fast as possible. Part of the system for testing was developed for detailed analysis of the learned models, as well as simple and transparent comparison of different models.
+
+The research had additional support from the company Microblink specialized in the development of computer vision technology for mobile devices. Internal datasets from the company are used for the learning and testing of models, and additional analysis was conducted on the companies internal classifier.
+The results are presented and discussed with the aim of finding the optimal model architecture for the application on a mobile device. In addition to the accuracy of the learned classifiers, their complexity and average classification duration was taken into account as well.
+
+\keywords{computer vision, character recognition, neural networks, deep learning, convolutional networks}
 \end{abstract}
 
 \end{document}
